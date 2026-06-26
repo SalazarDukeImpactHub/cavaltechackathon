@@ -10,6 +10,46 @@ export interface EstadoFormulario {
   error?: string;
 }
 
+export interface EstadoMiembro {
+  mensaje?: string;
+  ok?: boolean;
+}
+
+const MENSAJE_RPC: Record<string, string> = {
+  ok: "Miembro agregado ✓",
+  no_admin: "Solo un administrador puede agregar miembros.",
+  rol_invalido: "Rol inválido.",
+  usuario_no_encontrado: "No existe un usuario con ese email (debe haber ingresado al menos una vez).",
+};
+
+/** Agrega un miembro a una empresa por email, con un rol. Solo admins (validado en la base). */
+export async function agregarMiembro(
+  _prev: EstadoMiembro,
+  formData: FormData,
+): Promise<EstadoMiembro> {
+  const companyId = String(formData.get("companyId") ?? "");
+  const email = String(formData.get("email") ?? "").trim();
+  const rol = String(formData.get("rol") ?? "evaluador");
+
+  if (!email.includes("@")) return { mensaje: "Ingresá un email válido." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("agregar_miembro_por_email", {
+    p_company: companyId,
+    p_email: email,
+    p_rol: rol,
+  });
+
+  if (error) return { mensaje: "No se pudo agregar el miembro." };
+
+  const codigo = String(data);
+  if (codigo === "ok") {
+    revalidatePath("/dashboard");
+    return { ok: true, mensaje: MENSAJE_RPC.ok };
+  }
+  return { mensaje: MENSAJE_RPC[codigo] ?? "No se pudo agregar el miembro." };
+}
+
 const SECTORES_VALIDOS = ["Tecnología", "Salud", "Financiero", "Educación", "Comercio", "Servicios", "Industrial", "Otro"];
 const TAMANOS_VALIDOS = ["micro", "pequena", "mediana", "grande"];
 
