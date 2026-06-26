@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { calcularCumplimiento, type Respuestas } from "@/lib/diagnostico/calcular";
+import { calcularCumplimiento, sanitizarRespuestas } from "@/lib/diagnostico/calcular";
 import { generarAnalisisIA } from "@/lib/ia/analisis";
 import { ReporteDoc } from "@/lib/reporte/ReporteDoc";
 import { createClient } from "@/lib/supabase/server";
@@ -23,8 +23,8 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => ({}));
-  const respuestas = (body?.respuestas ?? {}) as Respuestas;
-  const empresa = typeof body?.empresa === "string" ? body.empresa : null;
+  const respuestas = sanitizarRespuestas(body?.respuestas);
+  const empresa = typeof body?.empresa === "string" ? body.empresa.slice(0, 120) : null;
 
   // El score se recalcula EN EL SERVIDOR — no confiamos en el cliente.
   const resultado = calcularCumplimiento(respuestas);

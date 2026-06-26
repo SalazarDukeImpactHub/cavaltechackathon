@@ -56,3 +56,21 @@ export function nivelCumplimiento(porcentaje: number): "bajo" | "medio" | "alto"
   if (porcentaje < 75) return "medio";
   return "alto";
 }
+
+const VALORES_VALIDOS: readonly string[] = ["si", "no", "na"];
+
+/**
+ * Filtra respuestas a SÓLO códigos de pregunta conocidos (P1..P11) con valores
+ * válidos. Defensa en profundidad: nada que no sea legítimo se calcula ni persiste.
+ */
+export function sanitizarRespuestas(input: Record<string, unknown> | null | undefined): Respuestas {
+  const limpio: Respuestas = {};
+  if (!input || typeof input !== "object") return limpio;
+  for (const p of PREGUNTAS) {
+    const v = (input as Record<string, unknown>)[p.codigo];
+    if (typeof v === "string" && VALORES_VALIDOS.includes(v)) {
+      limpio[p.codigo] = v as Respuesta;
+    }
+  }
+  return limpio;
+}

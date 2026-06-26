@@ -52,4 +52,12 @@ test("formatearNit produce el canónico base-DV", () => {
   assert.equal(formatearNit("800197268"), "800197268-4");
 });
 
+test("rechaza NIT trivial 000000-0 (todo ceros) aunque el DV cuadre", () => {
+  assert.equal(validarNit("000000-0").valido, false);
+});
+
+test("rechaza NIT de dígitos repetidos 111111-x", () => {
+  assert.equal(validarNit("111111-1").valido, false);
+});
+
 console.log(`\n${pasaron} tests pasaron.`);

@@ -52,10 +52,14 @@ export function validarNit(entrada: string): NitParseado {
     dvInformado = null;
   }
 
+  // Rechaza NITs triviales: todos los dígitos iguales (incluye 000000).
+  const noTrivial = !/^(\d)\1*$/.test(base);
+
   const sintaxisOk =
     /^\d+$/.test(base) &&
     base.length >= 6 &&
     base.length <= 15 &&
+    noTrivial &&
     dvInformado !== null;
 
   const valido = sintaxisOk && calcularDigitoVerificacion(base) === dvInformado;

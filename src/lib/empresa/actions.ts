@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { calcularCumplimiento, type Respuestas, type ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
+import {
+  calcularCumplimiento,
+  sanitizarRespuestas,
+  type Respuestas,
+  type ResultadoDiagnostico,
+} from "@/lib/diagnostico/calcular";
 import { validarNit, formatearNit } from "@/lib/nit/nit";
 
 export interface EstadoFormulario {
@@ -64,6 +69,8 @@ export async function crearEmpresa(
   const tamano = String(formData.get("tamano") ?? "").trim();
 
   if (nombre.length < 2) return { error: "Ingresá el nombre de la empresa." };
+  if (nombre.length > 120) return { error: "El nombre es demasiado largo (máximo 120 caracteres)." };
+  if (/[<>]/.test(nombre)) return { error: "El nombre contiene caracteres no permitidos." };
 
   const nit = validarNit(nitInput);
   if (!nit.valido) {
@@ -100,13 +107,26 @@ export async function guardarEvaluacion(
   companyId: string,
   respuestas: Respuestas,
 ): Promise<ResultadoDiagnostico> {
-  const resultado = calcularCumplimiento(respuestas);
-
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Sesión no válida.");
+
+  // Defensa en profundidad sobre RLS: verificar membresía + rol en el código.
+  const { data: membership } = await supabase
+    .from("company_members")
+    .select("rol")
+    .eq("company_id", companyId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!membership || membership.rol === "auditor") {
+    throw new Error("No autorizado para esta empresa.");
+  }
+
+  // Sólo respuestas legítimas (códigos conocidos + valores si/no/na) se calculan y persisten.
+  const limpias = sanitizarRespuestas(respuestas);
+  const resultado = calcularCumplimiento(limpias);
 
   const { data: evaluacion, error } = await supabase
     .from("evaluations")
@@ -121,7 +141,7 @@ export async function guardarEvaluacion(
 
   if (error || !evaluacion) throw new Error("No se pudo guardar la evaluación.");
 
-  const filas = Object.entries(respuestas)
+  const filas = Object.entries(limpias)
     .filter(([, v]) => v)
     .map(([codigo, respuesta]) => ({
       evaluation_id: evaluacion.id,
@@ -129,7 +149,10 @@ export async function guardarEvaluacion(
       respuesta: respuesta as string,
     }));
 
-  if (filas.length) await supabase.from("answers").insert(filas);
+  if (filas.length) {
+    const { error: errAns } = await supabase.from("answers").insert(filas);
+    if (errAns) console.error("guardarEvaluacion answers:", errAns.message);
+  }
 
   revalidatePath("/dashboard");
   return resultado;
