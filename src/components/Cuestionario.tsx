@@ -7,6 +7,7 @@ import { guardarEvaluacion } from "@/lib/empresa/actions";
 import { explicarPregunta } from "@/lib/ia/actions";
 import { ResultadoView } from "./ResultadoView";
 import { Markdown } from "./Markdown";
+import { DescargarPDF } from "./DescargarPDF";
 import { Logo } from "./Logo";
 import { BLOQUES, PREGUNTAS, type Respuesta } from "@/lib/diagnostico/preguntas";
 import type { Respuestas, ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
@@ -101,7 +102,7 @@ export function Cuestionario({
       <div style={{ animation: "fadeIn 350ms ease both" }}>
         <Nav>
           <div className="flex items-center gap-2">
-            <span className="text-[13px] text-dim max-sm:hidden">Diagnóstico completado</span>
+            <DescargarPDF respuestas={respuestas} empresa={companyName} />
             <button
               onClick={reiniciar}
               className="rounded-lg px-4 py-[7px] text-[13px] text-muted transition hover:text-white"
