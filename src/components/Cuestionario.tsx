@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { evaluarDiagnostico } from "@/app/diagnostico/actions";
+import { guardarEvaluacion } from "@/lib/empresa/actions";
+import { explicarPregunta } from "@/lib/ia/actions";
 import { ResultadoView } from "./ResultadoView";
 import { Logo } from "./Logo";
 import { BLOQUES, PREGUNTAS, type Respuesta } from "@/lib/diagnostico/preguntas";
@@ -16,12 +18,28 @@ const OPCIONES: { valor: Respuesta; etiqueta: string; color: string }[] = [
 
 const numero = (i: number) => String(i + 1).padStart(2, "0");
 
-export function Cuestionario() {
+export function Cuestionario({
+  companyId = null,
+  companyName = null,
+}: {
+  companyId?: string | null;
+  companyName?: string | null;
+}) {
   const router = useRouter();
   const [blockIndex, setBlockIndex] = useState(0);
   const [respuestas, setRespuestas] = useState<Respuestas>({});
   const [resultado, setResultado] = useState<ResultadoDiagnostico | null>(null);
   const [enviando, setEnviando] = useState(false);
+  const [explicaciones, setExplicaciones] = useState<Record<string, string>>({});
+  const [expCargando, setExpCargando] = useState<string | null>(null);
+
+  async function pedirExplicacion(codigo: string) {
+    if (explicaciones[codigo]) return;
+    setExpCargando(codigo);
+    const texto = await explicarPregunta(codigo);
+    setExplicaciones((prev) => ({ ...prev, [codigo]: texto }));
+    setExpCargando(null);
+  }
 
   const bloque = BLOQUES[blockIndex];
   const preguntas = PREGUNTAS.filter((p) => p.bloque === bloque.codigo);
@@ -51,7 +69,9 @@ export function Cuestionario() {
       scrollTop();
     } else {
       setEnviando(true);
-      const res = await evaluarDiagnostico(respuestas);
+      const res = companyId
+        ? await guardarEvaluacion(companyId, respuestas)
+        : await evaluarDiagnostico(respuestas);
       setResultado(res);
       setEnviando(false);
       scrollTop();
@@ -132,7 +152,7 @@ export function Cuestionario() {
           {/* Header de bloque */}
           <div className="mb-9" style={{ animation: "fadeIn 300ms ease both" }}>
             <div className="mb-2.5 text-xs font-semibold uppercase tracking-[1.5px]" style={{ color: "var(--gold)" }}>
-              Bloque {numero(blockIndex)} de {numero(BLOQUES.length - 1)}
+              {companyName ? `${companyName} · ` : ""}Bloque {numero(blockIndex)} de {numero(BLOQUES.length - 1)}
             </div>
             <h2 className="font-display mb-2 text-[26px] font-bold text-white">{bloque.titulo}</h2>
             <p className="text-[15px] leading-[1.55] text-muted">{bloque.descripcion}</p>
@@ -166,7 +186,25 @@ export function Cuestionario() {
                         <div className="mb-2 text-[11px] text-dim">Complementaria · no puntúa</div>
                       )}
 
-                      <p className="mb-5 text-[15px] font-medium leading-[1.6] text-white">{p.texto}</p>
+                      <p className="mb-2 text-[15px] font-medium leading-[1.6] text-white">{p.texto}</p>
+
+                      <button
+                        onClick={() => pedirExplicacion(p.codigo)}
+                        disabled={expCargando === p.codigo}
+                        className="mb-4 text-xs transition hover:brightness-110 disabled:opacity-60"
+                        style={{ color: "var(--gold)" }}
+                      >
+                        {expCargando === p.codigo ? "Consultando IA…" : "✦ ¿Qué significa?"}
+                      </button>
+
+                      {explicaciones[p.codigo] && (
+                        <p
+                          className="mb-4 rounded-lg p-3 text-[13px] leading-[1.6] text-soft"
+                          style={{ background: "rgba(201,162,39,.08)", border: "1px solid rgba(201,162,39,.2)" }}
+                        >
+                          {explicaciones[p.codigo]}
+                        </p>
+                      )}
 
                       <div className="flex gap-2">
                         {OPCIONES.map((op) => {

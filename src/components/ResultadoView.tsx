@@ -2,6 +2,7 @@ import { Gauge } from "./Gauge";
 import { type ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
 import { BLOQUES } from "@/lib/diagnostico/preguntas";
 import { recomendacionesPara, PRIORIDAD_META } from "@/lib/diagnostico/recomendaciones";
+import { AnalisisIA } from "./AnalisisIA";
 
 interface NivelInfo {
   label: string;
@@ -112,6 +113,11 @@ export function ResultadoView({ resultado }: { resultado: ResultadoDiagnostico }
             })}
           </div>
         )}
+      </div>
+
+      {/* Análisis con IA */}
+      <div className="mx-auto px-6 pb-9" style={{ maxWidth: 680 }}>
+        <AnalisisIA porcentaje={resultado.porcentaje} brechas={resultado.brechas} />
       </div>
 
       {/* CTA */}
