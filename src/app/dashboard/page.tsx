@@ -131,13 +131,20 @@ export default async function DashboardPage() {
                     ) : (
                       <ul className="flex flex-col gap-2">
                         {propias.map((e) => (
-                          <li key={e.id} className="flex items-center justify-between rounded-lg px-4 py-3" style={{ background: "rgba(255,255,255,.03)" }}>
-                            <span className="text-sm text-soft">
-                              {new Date(e.created_at).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" })}
-                            </span>
-                            <span className="font-display text-lg font-bold" style={{ color: colorPct(e.porcentaje) }}>
-                              {e.porcentaje}%
-                            </span>
+                          <li key={e.id}>
+                            <Link
+                              href={`/evaluacion/${e.id}`}
+                              className="flex items-center justify-between rounded-lg px-4 py-3 transition hover:brightness-125"
+                              style={{ background: "rgba(255,255,255,.03)" }}
+                            >
+                              <span className="text-sm text-soft">
+                                {new Date(e.created_at).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" })}
+                                <span className="text-dim"> · ver detalle →</span>
+                              </span>
+                              <span className="font-display text-lg font-bold" style={{ color: colorPct(e.porcentaje) }}>
+                                {e.porcentaje}%
+                              </span>
+                            </Link>
                           </li>
                         ))}
                       </ul>

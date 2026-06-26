@@ -51,14 +51,35 @@ const s = StyleSheet.create({
   footer: { position: "absolute", bottom: 30, left: 40, right: 40, fontSize: 8, color: COLOR.muted, textAlign: "center", borderTop: `1 solid ${COLOR.borde}`, paddingTop: 8 },
 });
 
+/** Convierte el Markdown de la IA en líneas planas para el PDF (sin ##, **, etc.). */
+function lineasMarkdown(md: string) {
+  return md
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => {
+      const esTitulo = /^#{1,6}\s/.test(l);
+      const esVineta = /^[-*]\s+/.test(l);
+      const texto = l
+        .replace(/^#{1,6}\s*/, "")
+        .replace(/^>\s?/, "")
+        .replace(/^[-*]\s+/, "")
+        .replace(/\*\*/g, "")
+        .replace(/`/g, "");
+      return { texto, esTitulo, esVineta };
+    });
+}
+
 export function ReporteDoc({
   resultado,
   empresa,
   fecha,
+  analisis,
 }: {
   resultado: ResultadoDiagnostico;
   empresa?: string | null;
   fecha: string;
+  analisis?: string | null;
 }) {
   const recs = recomendacionesPara(resultado.brechas);
   const c = colorPct(resultado.porcentaje);
@@ -115,6 +136,23 @@ export function ReporteDoc({
             );
           })
         )}
+
+        {analisis ? (
+          <View wrap={false}>
+            <Text style={[s.seccion, { marginTop: 20 }]}>Análisis con IA</Text>
+            {lineasMarkdown(analisis).map((ln, i) =>
+              ln.esTitulo ? (
+                <Text key={i} style={{ fontFamily: "Helvetica-Bold", fontSize: 11, color: COLOR.primary, marginTop: 8, marginBottom: 2 }}>
+                  {ln.texto}
+                </Text>
+              ) : (
+                <Text key={i} style={{ marginBottom: 3, lineHeight: 1.4 }}>
+                  {ln.esVineta ? `•  ${ln.texto}` : ln.texto}
+                </Text>
+              ),
+            )}
+          </View>
+        ) : null}
 
         <Text style={s.footer} fixed>
           Generado por CAVALTEC Autodiagnóstico · Este reporte es orientativo y no constituye asesoría legal.
