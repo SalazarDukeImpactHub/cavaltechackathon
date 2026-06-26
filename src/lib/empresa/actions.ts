@@ -86,7 +86,10 @@ export async function crearEmpresa(
     creado_por: user.id,
   });
 
-  if (error) return { error: "No pudimos crear la empresa: " + error.message };
+  if (error) {
+    console.error("crearEmpresa:", error.message); // detalle solo en servidor
+    return { error: "No pudimos crear la empresa. Intentá de nuevo." };
+  }
 
   revalidatePath("/dashboard");
   redirect("/dashboard");

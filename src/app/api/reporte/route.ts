@@ -3,11 +3,25 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { calcularCumplimiento, type Respuestas } from "@/lib/diagnostico/calcular";
 import { generarAnalisisIA } from "@/lib/ia/analisis";
 import { ReporteDoc } from "@/lib/reporte/ReporteDoc";
+import { createClient } from "@/lib/supabase/server";
+import { permitido } from "@/lib/seguridad/rate-limit";
 
 // @react-pdf necesita APIs de Node.
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
+  // Requiere sesión: este endpoint genera un análisis con IA (operación paga).
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return new Response("No autorizado", { status: 401 });
+  }
+  if (!permitido(`reporte:${user.id}`, 5, 60_000)) {
+    return new Response("Demasiadas solicitudes", { status: 429 });
+  }
+
   const body = await req.json().catch(() => ({}));
   const respuestas = (body?.respuestas ?? {}) as Respuestas;
   const empresa = typeof body?.empresa === "string" ? body.empresa : null;
