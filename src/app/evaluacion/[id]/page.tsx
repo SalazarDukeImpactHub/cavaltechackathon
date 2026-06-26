@@ -80,7 +80,7 @@ export default async function EvaluacionPage({
         </h1>
       </div>
 
-      <ResultadoView resultado={resultado} />
+      <ResultadoView resultado={resultado} empresa={empresa?.nombre ?? null} />
     </div>
   );
 }

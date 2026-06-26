@@ -120,7 +120,7 @@ export function Cuestionario({
             </button>
           </div>
         </Nav>
-        <ResultadoView resultado={resultado} />
+        <ResultadoView resultado={resultado} empresa={companyName} />
       </div>
     );
   }

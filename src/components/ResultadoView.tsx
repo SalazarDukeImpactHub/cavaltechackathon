@@ -23,9 +23,29 @@ function colorPorPct(p: number): string {
   return "#22c55e";
 }
 
-export function ResultadoView({ resultado }: { resultado: ResultadoDiagnostico }) {
+const WHATSAPP_TEL = "573136998787";
+
+export function ResultadoView({
+  resultado,
+  empresa,
+}: {
+  resultado: ResultadoDiagnostico;
+  empresa?: string | null;
+}) {
   const nivel = nivelInfo(resultado.porcentaje);
   const recomendaciones = recomendacionesPara(resultado.brechas);
+
+  // Mensaje pre-llenado para la asesoría por WhatsApp, con el contexto del diagnóstico.
+  const lineasBrechas = recomendaciones.length
+    ? recomendaciones.map((r) => `• ${r.accion}`).join("\n")
+    : "Sin brechas detectadas.";
+  const mensajeWa =
+    "Hola CAVALTEC, quiero solicitar asesoría sobre mi autodiagnóstico de cumplimiento de la Ley 1581.\n\n" +
+    (empresa ? `Empresa: ${empresa}\n` : "") +
+    `Nivel de cumplimiento (fase de diseño): ${resultado.porcentaje}% — ${nivel.label}\n\n` +
+    `Brechas prioritarias a cerrar:\n${lineasBrechas}\n\n` +
+    "¿Me pueden ayudar a cerrarlas?";
+  const urlWa = `https://api.whatsapp.com/send/?phone=${WHATSAPP_TEL}&text=${encodeURIComponent(mensajeWa)}&type=phone_number&app_absent=0`;
 
   return (
     <div style={{ animation: "fadeIn 350ms ease both" }}>
@@ -127,12 +147,15 @@ export function ResultadoView({ resultado }: { resultado: ResultadoDiagnostico }
           <p className="mb-6 text-sm text-muted">
             Nuestro equipo puede ayudarte a cerrar las brechas y alcanzar el cumplimiento de la Ley 1581.
           </p>
-          <button
-            className="font-display rounded-xl bg-primary px-10 py-[15px] text-base font-semibold text-white transition hover:-translate-y-px hover:bg-primary-hover"
+          <a
+            href={urlWa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-display inline-block rounded-xl bg-primary px-10 py-[15px] text-base font-semibold text-white transition hover:-translate-y-px hover:bg-primary-hover"
             style={{ boxShadow: "0 0 32px rgba(14,41,118,.4)" }}
           >
             Solicitar asesoría CAVALTEC
-          </button>
+          </a>
         </div>
       </div>
     </div>
