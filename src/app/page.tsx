@@ -61,12 +61,20 @@ export default function Home() {
         <Logo />
         <div className="flex items-center gap-7">
           <Link href="#" className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden">Inicio</Link>
-          <Link href="#" className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden">Servicios</Link>
-          <Link href="#" className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden">Contáctenos</Link>
-          <Link href="/login" className="text-[13.5px] text-muted transition hover:text-white">Ingresar</Link>
-          <div className="flex items-center gap-2 rounded-lg bg-primary px-[18px] py-2 text-[13px] font-medium text-white transition hover:bg-primary-hover">
-            WhatsApp
-          </div>
+          <a
+            href="https://www.cavaltec.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden"
+          >
+            Conocé CAVALTEC
+          </a>
+          <Link
+            href="/login"
+            className="rounded-lg bg-primary px-[18px] py-2 text-[13px] font-medium text-white transition hover:bg-primary-hover"
+          >
+            Ingresar
+          </Link>
         </div>
       </nav>
 
