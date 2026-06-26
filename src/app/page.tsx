@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { Footer } from "@/components/Footer";
 
 const FEATURES = [
   {
@@ -40,23 +41,11 @@ const FEATURES = [
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="dot-grid pointer-events-none absolute inset-0" />
-      <div
-        className="pointer-events-none absolute left-1/2 top-[40%]"
-        style={{
-          transform: "translate(-50%,-50%)",
-          width: 960,
-          height: 640,
-          background: "radial-gradient(ellipse, rgba(14,41,118,.22) 0%, transparent 68%)",
-          animation: "glow 6s ease-in-out infinite",
-        }}
-      />
-
-      {/* NAV */}
+    <>
+      {/* NAV (fija) */}
       <nav
-        className="relative z-10 flex h-[72px] items-center justify-between px-6 sm:px-12"
-        style={{ borderBottom: "1px solid rgba(255,255,255,.06)" }}
+        className="sticky top-0 z-50 flex h-[72px] items-center justify-between px-6 sm:px-12"
+        style={{ background: "rgba(8,14,38,.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,.06)" }}
       >
         <Logo />
         <div className="flex items-center gap-7">
@@ -79,85 +68,101 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <div
-        className="relative z-[1] flex flex-col items-center justify-center px-6 pb-16 pt-10 text-center"
-        style={{ minHeight: "calc(100vh - 72px)" }}
-      >
+      <div className="relative overflow-hidden">
+        <div className="dot-grid pointer-events-none absolute inset-0" />
         <div
-          className="mb-7 inline-flex items-center gap-2 rounded-full px-[18px] py-[7px]"
-          style={{ background: "rgba(201,162,39,.1)", border: "1px solid rgba(201,162,39,.3)" }}
-        >
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: "var(--gold)" }} />
-          <span className="text-[13px] font-medium" style={{ color: "var(--gold-bright)", letterSpacing: ".4px" }}>
-            Ley 1581 de 2012 · Protección de Datos · Colombia
-          </span>
-        </div>
-
-        <h1
-          className="font-display mb-[22px] font-extrabold leading-[1.1] text-white"
-          style={{ fontSize: "clamp(30px,5vw,60px)", maxWidth: 860 }}
-        >
-          Conocé tu nivel de <span style={{ color: "var(--gold)" }}>cumplimiento</span>
-          <br />en protección de datos personales
-        </h1>
-
-        <p className="mb-11 leading-[1.65] text-muted" style={{ fontSize: "clamp(15px,2vw,18px)", maxWidth: 560 }}>
-          Respondé 11 preguntas y obtené un diagnóstico preciso con brechas identificadas y
-          recomendaciones accionables para tu empresa.
-        </p>
-
-        <Link
-          href="/dashboard"
-          className="font-display rounded-xl bg-primary px-[52px] py-[18px] text-[17px] font-semibold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover"
+          className="pointer-events-none absolute left-1/2 top-[40%]"
           style={{
-            boxShadow: "0 0 48px rgba(14,41,118,.45), inset 0 1px 0 rgba(255,255,255,.12)",
-            letterSpacing: ".3px",
+            transform: "translate(-50%,-50%)",
+            width: 960,
+            height: 640,
+            background: "radial-gradient(ellipse, rgba(14,41,118,.22) 0%, transparent 68%)",
+            animation: "glow 6s ease-in-out infinite",
           }}
+        />
+
+        <div
+          className="relative z-[1] flex flex-col items-center justify-center px-6 pb-16 pt-10 text-center"
+          style={{ minHeight: "calc(100vh - 72px)" }}
         >
-          Iniciar diagnóstico →
-        </Link>
+          <div
+            className="mb-7 inline-flex items-center gap-2 rounded-full px-[18px] py-[7px]"
+            style={{ background: "rgba(201,162,39,.1)", border: "1px solid rgba(201,162,39,.3)" }}
+          >
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: "var(--gold)" }} />
+            <span className="text-[13px] font-medium" style={{ color: "var(--gold-bright)", letterSpacing: ".4px" }}>
+              Ley 1581 de 2012 · Protección de Datos · Colombia
+            </span>
+          </div>
 
-        {/* Stats */}
-        <div className="mt-[60px] flex items-center gap-6 sm:gap-10">
-          {[
-            ["11", "Preguntas clave"],
-            ["3", "Dimensiones"],
-            ["~5 min", "Tiempo estimado"],
-          ].map(([n, l], i) => (
-            <div key={l} className="flex items-center gap-6 sm:gap-10">
-              {i > 0 && <span className="h-9 w-px" style={{ background: "rgba(255,255,255,.08)" }} />}
-              <div className="text-center">
-                <div className="font-display text-3xl font-bold leading-none">{n}</div>
-                <div className="mt-[5px] text-xs text-dim">{l}</div>
+          <h1
+            className="font-display mb-[22px] font-extrabold leading-[1.1] text-white"
+            style={{ fontSize: "clamp(30px,5vw,60px)", maxWidth: 860 }}
+          >
+            Conocé tu nivel de <span style={{ color: "var(--gold)" }}>cumplimiento</span>
+            <br />en protección de datos personales
+          </h1>
+
+          <p className="mb-11 leading-[1.65] text-muted" style={{ fontSize: "clamp(15px,2vw,18px)", maxWidth: 560 }}>
+            Respondé 11 preguntas y obtené un diagnóstico preciso con brechas identificadas y
+            recomendaciones accionables para tu empresa.
+          </p>
+
+          <Link
+            href="/dashboard"
+            className="font-display rounded-xl bg-primary px-[52px] py-[18px] text-[17px] font-semibold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover"
+            style={{
+              boxShadow: "0 0 48px rgba(14,41,118,.45), inset 0 1px 0 rgba(255,255,255,.12)",
+              letterSpacing: ".3px",
+            }}
+          >
+            Iniciar diagnóstico →
+          </Link>
+
+          {/* Stats */}
+          <div className="mt-[60px] flex items-center gap-6 sm:gap-10">
+            {[
+              ["11", "Preguntas clave"],
+              ["3", "Dimensiones"],
+              ["~5 min", "Tiempo estimado"],
+            ].map(([n, l], i) => (
+              <div key={l} className="flex items-center gap-6 sm:gap-10">
+                {i > 0 && <span className="h-9 w-px" style={{ background: "rgba(255,255,255,.08)" }} />}
+                <div className="text-center">
+                  <div className="font-display text-3xl font-bold leading-none">{n}</div>
+                  <div className="mt-[5px] text-xs text-dim">{l}</div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <p className="mt-[18px] text-xs text-dim">Acceso seguro · Datos cifrados · Confidencial</p>
+          <p className="mt-[18px] text-xs text-dim">Acceso seguro · Datos cifrados · Confidencial</p>
 
-        {/* Feature cards */}
-        <div className="mt-[52px] flex w-full max-w-[820px] flex-col gap-4 sm:flex-row">
-          {FEATURES.map((f) => (
-            <div
-              key={f.titulo}
-              className="flex-1 rounded-2xl p-6"
-              style={{ background: "rgba(13,21,64,.6)", border: "1px solid rgba(255,255,255,.07)", backdropFilter: "blur(12px)" }}
-            >
+          {/* Feature cards */}
+          <div className="mt-[52px] flex w-full max-w-[820px] flex-col gap-4 sm:flex-row">
+            {FEATURES.map((f) => (
               <div
-                className="mb-[14px] flex h-9 w-9 items-center justify-center rounded-lg"
-                style={{ background: f.bg, border: `1px solid ${f.border}` }}
+                key={f.titulo}
+                className="flex-1 rounded-2xl p-6"
+                style={{ background: "rgba(13,21,64,.6)", border: "1px solid rgba(255,255,255,.07)", backdropFilter: "blur(12px)" }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={f.color} strokeWidth="2" strokeLinecap="round">
-                  {f.icon}
-                </svg>
+                <div
+                  className="mb-[14px] flex h-9 w-9 items-center justify-center rounded-lg"
+                  style={{ background: f.bg, border: `1px solid ${f.border}` }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={f.color} strokeWidth="2" strokeLinecap="round">
+                    {f.icon}
+                  </svg>
+                </div>
+                <div className="font-display mb-1.5 text-[15px] font-semibold">{f.titulo}</div>
+                <div className="text-[13px] leading-[1.5] text-muted">{f.desc}</div>
               </div>
-              <div className="font-display mb-1.5 text-[15px] font-semibold">{f.titulo}</div>
-              <div className="text-[13px] leading-[1.5] text-muted">{f.desc}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      <Footer />
+    </>
   );
 }
