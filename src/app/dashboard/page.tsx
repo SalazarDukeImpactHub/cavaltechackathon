@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Logo } from "@/components/Logo";
 import { RegistroEmpresa } from "@/components/RegistroEmpresa";
-import { GestionMiembros, ROL_META, type Miembro } from "@/components/GestionMiembros";
+import { GestionMiembros } from "@/components/GestionMiembros";
+import { ROL_META, type Miembro } from "@/lib/roles";
 
 function colorPct(p: number) {
   if (p < 40) return "#ef4444";

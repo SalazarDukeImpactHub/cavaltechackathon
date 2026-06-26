@@ -2,18 +2,7 @@
 
 import { useActionState } from "react";
 import { agregarMiembro, type EstadoMiembro } from "@/lib/empresa/actions";
-
-export const ROL_META: Record<string, { label: string; color: string }> = {
-  admin: { label: "Administrador", color: "var(--gold)" },
-  evaluador: { label: "Evaluador", color: "var(--primary-light)" },
-  auditor: { label: "Auditor", color: "var(--muted)" },
-};
-
-export interface Miembro {
-  user_id: string;
-  rol: string;
-  nombre: string;
-}
+import { ROL_META, type Miembro } from "@/lib/roles";
 
 const inputCls = "rounded-lg px-3 py-2 text-sm text-white outline-none";
 const inputStyle = { background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)" };
