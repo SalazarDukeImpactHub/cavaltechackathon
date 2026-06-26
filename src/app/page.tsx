@@ -107,7 +107,7 @@ export default function Home() {
         </p>
 
         <Link
-          href="/diagnostico"
+          href="/dashboard"
           className="font-display rounded-xl bg-primary px-[52px] py-[18px] text-[17px] font-semibold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover"
           style={{
             boxShadow: "0 0 48px rgba(14,41,118,.45), inset 0 1px 0 rgba(255,255,255,.12)",
@@ -134,7 +134,7 @@ export default function Home() {
           ))}
         </div>
 
-        <p className="mt-[18px] text-xs text-dim">Gratuito · Sin registro · Confidencial</p>
+        <p className="mt-[18px] text-xs text-dim">Acceso seguro · Datos cifrados · Confidencial</p>
 
         {/* Feature cards */}
         <div className="mt-[52px] flex w-full max-w-[820px] flex-col gap-4 sm:flex-row">

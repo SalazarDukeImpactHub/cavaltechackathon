@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { signInWithGoogle } from "./actions";
 
@@ -58,10 +57,7 @@ export default async function LoginPage({
         </form>
 
         <p className="mt-6 text-xs text-dim">
-          ¿Solo querés probar?{" "}
-          <Link href="/diagnostico" className="transition hover:text-muted" style={{ color: "var(--gold)" }}>
-            Diagnóstico sin registro →
-          </Link>
+          El autodiagnóstico requiere una cuenta para proteger los datos de tu empresa.
         </p>
       </div>
     </div>
