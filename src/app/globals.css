@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Identidad CAVALTEC (del manual de marca + diseño aprobado) */
+  --background: #080e26;
+  --foreground: #ffffff;
+  --primary: #0e2976;
+  --primary-hover: #1235a0;
+  --primary-light: #3b5fc8;
+  --gold: #c9a227;
+  --gold-bright: #e8c048;
+  --muted: #94a3c8;
+  --dim: #4b5a82;
+  --soft: #cbd5e1;
+  --surface: #0d1540;
+  --border: rgba(255, 255, 255, 0.07);
+
+  /* Niveles de cumplimiento */
+  --nivel-bajo: #ef4444;
+  --nivel-medio: #f59e0b;
+  --nivel-alto: #22c55e;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-soft: var(--soft);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-nivel-bajo: var(--nivel-bajo);
+  --color-nivel-medio: var(--nivel-medio);
+  --color-nivel-alto: var(--nivel-alto);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-outfit);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--primary-light);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Fondo de puntos sutil */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.042) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes revealCard {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
