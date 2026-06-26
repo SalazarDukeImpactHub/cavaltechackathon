@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { evaluarDiagnostico } from "@/app/diagnostico/actions";
 import { guardarEvaluacion } from "@/lib/empresa/actions";
@@ -102,6 +103,13 @@ export function Cuestionario({
       <div style={{ animation: "fadeIn 350ms ease both" }}>
         <Nav>
           <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="rounded-lg px-4 py-[7px] text-[13px] text-muted transition hover:text-white"
+              style={{ border: "1px solid rgba(255,255,255,.12)" }}
+            >
+              ← Inicio
+            </Link>
             <DescargarPDF respuestas={respuestas} empresa={companyName} />
             <button
               onClick={reiniciar}
@@ -274,7 +282,9 @@ function Nav({ children, sticky }: { children: React.ReactNode; sticky?: boolean
       style={{ background: "rgba(8,14,38,.97)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,.07)" }}
     >
       <div className="mx-auto flex h-16 items-center justify-between px-6 sm:px-12">
-        <Logo size="sm" />
+        <Link href="/" aria-label="Ir al inicio">
+          <Logo size="sm" />
+        </Link>
         {children}
       </div>
     </div>

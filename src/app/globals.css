@@ -58,6 +58,14 @@ body {
   border-radius: 4px;
 }
 
+button:not(:disabled),
+a {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
 /* Fondo de puntos sutil */
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.042) 1px, transparent 1px);
