@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { generarAnalisis } from "@/lib/ia/actions";
+import { Markdown } from "./Markdown";
 
 export function AnalisisIA({ porcentaje, brechas }: { porcentaje: number; brechas: string[] }) {
   const [texto, setTexto] = useState<string | null>(null);
@@ -39,7 +40,7 @@ export function AnalisisIA({ porcentaje, brechas }: { porcentaje: number; brecha
           </button>
         </>
       ) : (
-        <p className="whitespace-pre-wrap text-sm leading-[1.7] text-soft">{texto}</p>
+        <Markdown>{texto}</Markdown>
       )}
     </div>
   );

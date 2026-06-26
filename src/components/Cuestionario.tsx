@@ -6,6 +6,7 @@ import { evaluarDiagnostico } from "@/app/diagnostico/actions";
 import { guardarEvaluacion } from "@/lib/empresa/actions";
 import { explicarPregunta } from "@/lib/ia/actions";
 import { ResultadoView } from "./ResultadoView";
+import { Markdown } from "./Markdown";
 import { Logo } from "./Logo";
 import { BLOQUES, PREGUNTAS, type Respuesta } from "@/lib/diagnostico/preguntas";
 import type { Respuestas, ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
@@ -198,12 +199,12 @@ export function Cuestionario({
                       </button>
 
                       {explicaciones[p.codigo] && (
-                        <p
-                          className="mb-4 rounded-lg p-3 text-[13px] leading-[1.6] text-soft"
+                        <div
+                          className="mb-4 rounded-lg p-3 text-[13px]"
                           style={{ background: "rgba(201,162,39,.08)", border: "1px solid rgba(201,162,39,.2)" }}
                         >
-                          {explicaciones[p.codigo]}
-                        </p>
+                          <Markdown>{explicaciones[p.codigo]}</Markdown>
+                        </div>
                       )}
 
                       <div className="flex gap-2">
