@@ -12,7 +12,7 @@
 
 > Aplicación web que permite a cualquier empresa **medir su nivel de cumplimiento de la Ley 1581 de 2012** (protección de datos personales, Colombia) en la fase de diseño — detectando brechas y generando un plan de acción accionable, asistido por IA.
 
-**[🌐 Probar la app en vivo](https://cavaltechackathon.vercel.app)** · **[🏢 Conocé CAVALTEC](https://www.cavaltec.com/)**
+**[🌐 Probar la app en vivo](https://cavaltechackathon.vercel.app)** · **[🏢 Conozca CAVALTEC](https://www.cavaltec.com/)**
 
 ---
 
@@ -38,12 +38,12 @@
 
 ## ✨ Qué hace
 
-Muchas organizaciones colombianas deben cumplir la Ley 1581 pero **no tienen una herramienta simple** para saber qué tan bien aplican *privacidad desde el diseño*. CAVALTEC resuelve eso en cuatro pasos:
+Muchas organizaciones colombianas deben cumplir la Ley 1581 pero **no tienen una herramienta simple** para saber qué tan bien aplican *privacidad desde el diseño*. CAVALTEC lo resuelve en cuatro pasos:
 
-1. **Ingresás** con tu cuenta de Google (OAuth) y registrás tu empresa.
-2. **Respondés** un cuestionario estructurado de 11 preguntas (fase de diseño).
-3. **Obtenés** un porcentaje de cumplimiento, un diagnóstico visual y tus brechas detectadas.
-4. **Recibís** recomendaciones priorizadas + un análisis con IA y un reporte PDF descargable.
+1. **Ingrese** con su cuenta de Google (OAuth) y registre su empresa.
+2. **Responda** un cuestionario estructurado de 11 preguntas (fase de diseño).
+3. **Obtenga** un porcentaje de cumplimiento, un diagnóstico visual y sus brechas detectadas.
+4. **Reciba** recomendaciones priorizadas **adaptadas al sector y tamaño de su empresa**, un análisis con IA y un reporte PDF descargable.
 
 ---
 
@@ -52,14 +52,16 @@ Muchas organizaciones colombianas deben cumplir la Ley 1581 pero **no tienen una
 | Función | Detalle |
 |---------|---------|
 | 🧮 **Motor de diagnóstico** | 11 preguntas ponderadas, lógica condicional padre-hijo, **scoring calculado en el servidor** |
+| 🎯 **Recomendaciones personalizadas** | Las acciones y el análisis con IA se adaptan al **sector y tamaño** de la empresa (no son genéricas) |
 | 🆔 **Validación de NIT real** | Algoritmo **Módulo 11 de la DIAN** — validado en TypeScript *y* en PostgreSQL |
 | 🏢 **Multiempresa** | Aislamiento total por empresa mediante **Row Level Security** de Supabase |
-| 👤 **Roles (RBAC)** | Administrador / Evaluador / Auditor, con control real (UI + base de datos) |
-| 🤖 **IA aplicada** | Claude explica las preguntas en lenguaje simple y arma un plan de acción personalizado |
-| 📄 **Reportes PDF** | Descargable, generado en el servidor, **con el análisis de IA incluido** |
+| 👤 **Roles (RBAC)** | Administrador / Evaluador / Auditor con control real (UI + base de datos), invitaciones por email y guardas anti "último administrador" |
+| 🤖 **IA aplicada** | Claude explica las preguntas en lenguaje simple (Haiku) y arma un plan de acción personalizado (Sonnet) |
+| 💬 **Asistente Vale** | Chatbot nativo con Claude — versión pública en la landing (FAQ) y versión interna que conoce el diagnóstico de la empresa |
+| 📄 **Reportes PDF** | Descargable, generado en el servidor, **con el análisis de IA y la personalización por perfil incluidos** |
 | 📈 **Historial** | Cada empresa guarda y reabre sus diagnósticos pasados |
-| 💬 **Asesoría directa** | CTA a WhatsApp con el contexto del diagnóstico pre-cargado |
-| 🔒 **Seguridad** | Auditoría OWASP propia, security headers y defensa en profundidad |
+| 📲 **Asesoría directa** | CTA a WhatsApp con el contexto del diagnóstico precargado |
+| 🔒 **Seguridad** | Auditoría OWASP propia, RBAC endurecido por RPC SECURITY DEFINER, security headers y defensa en profundidad |
 
 ---
 
@@ -112,6 +114,8 @@ El cuestionario sigue la tabla oficial del reto, con **3 bloques ponderados** qu
 
 **Lógica condicional (padre-hijo):** la primera pregunta de Política es un *gate*. Si la empresa **no** tiene política de tratamiento, sus preguntas hijas se anulan automáticamente (no suman). Cada respuesta afirmativa suma su peso; el resultado es el % de cumplimiento, con las preguntas falladas convertidas en brechas priorizadas.
 
+**Recomendaciones adaptadas al perfil:** sobre cada brecha se aplica una recomendación base estable + notas específicas según el **sector** (salud, financiero, educación, comercio, tecnología) y el **tamaño** (micro, pequeña, mediana, grande). El mismo P10 (oficial de protección de datos) genera consejos distintos para una microempresa comercial y una empresa financiera grande — sin perder la consistencia legal de la base.
+
 ---
 
 ## 🚀 Correr localmente
@@ -128,7 +132,7 @@ npm install
 cp .env.local.example .env.local
 ```
 
-Completá `.env.local` con tus valores:
+Complete `.env.local` con sus valores:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://TU-PROYECTO.supabase.co
@@ -143,6 +147,8 @@ ANTHROPIC_API_KEY=sk-ant-...   # solo servidor, nunca con prefijo NEXT_PUBLIC
 #    supabase/migrations/001_nit_validacion.sql
 #    supabase/migrations/002_company_membership.sql
 #    supabase/migrations/003_roles.sql
+#    supabase/migrations/004_invitaciones.sql
+#    supabase/migrations/005_roles_fix.sql
 
 # 4. Configurar OAuth de Google en Supabase
 #    Authentication → Providers → Google (Client ID + Secret)
@@ -179,11 +185,13 @@ Una app que predica protección de datos **pasa su propia auditoría**. Capas im
 - **Scoring en servidor** — el cliente nunca define su puntaje (frontera de confianza).
 - **Row Level Security** — cada empresa aislada a nivel de fila en PostgreSQL.
 - **Validación de NIT Módulo 11** — en código *y* como `CHECK` en la base.
-- **Autenticación obligatoria** — sin login no hay diagnóstico (ni acceso anónimo).
-- **RBAC defensivo** — el auditor es solo-lectura, validado en UI **y** en RLS.
-- **Endpoints de IA/PDF protegidos** — requieren sesión + rate limit (anti abuso de costos).
+- **Autenticación obligatoria** — sin sesión no hay diagnóstico (ni acceso anónimo).
+- **RBAC endurecido por SECURITY DEFINER** — toda gestión de miembros pasa por RPC controladas (`agregar_miembro_por_email`, `cambiar_rol_miembro`, `remover_miembro`); el `INSERT` directo sobre `company_members` está deshabilitado a nivel de policy para impedir escalada de privilegios.
+- **Guardas anti "último administrador"** — la base bloquea cualquier operación que dejaría una empresa sin administradores.
+- **`/api/reporte` con validación de membresía** — recibe solo el `evaluation_id`; respuestas y empresa se leen de la base con la sesión del usuario, RLS filtra automáticamente.
+- **Endpoints de IA/PDF protegidos** — requieren sesión + rate limit (anti abuso de costos de IA).
 - **Security headers** — CSP, `X-Frame-Options`, `HSTS`, `Referrer-Policy`, `nosniff`.
-- **Defensa en profundidad** — sanitización de entradas y verificación de membresía en código, no solo en la base.
+- **Defensa en profundidad** — sanitización de entradas, verificación de membresía y rol tanto en código como en la base.
 
 > Resultado de la auditoría OWASP A01–A10: **sin hallazgos críticos.**
 
@@ -195,7 +203,8 @@ Una app que predica protección de datos **pasa su propia auditoría**. Capas im
 |-----------|--------|
 | Tema claro / oscuro conmutable | Backlog |
 | Segundo idioma (inglés) | Backlog |
-| Imagen de fondo en el hero | Backlog |
+| Asignación granular de auditores por evaluación | Backlog — hoy se asigna por empresa vía invitación |
+| Notificación por email al invitar un miembro | Backlog |
 | Rate limiting distribuido (Redis) | Hoy es best-effort en memoria |
 
 ---
