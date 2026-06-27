@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
+import { ChatWidget } from "@/components/ChatWidget";
 
 const FEATURES = [
   {
@@ -163,6 +164,7 @@ export default function Home() {
       </div>
 
       <Footer />
+      <ChatWidget />
     </>
   );
 }
