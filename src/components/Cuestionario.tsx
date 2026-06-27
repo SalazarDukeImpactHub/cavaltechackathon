@@ -32,6 +32,7 @@ export function Cuestionario({
   const [blockIndex, setBlockIndex] = useState(0);
   const [respuestas, setRespuestas] = useState<Respuestas>({});
   const [resultado, setResultado] = useState<ResultadoDiagnostico | null>(null);
+  const [evaluationId, setEvaluationId] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [explicaciones, setExplicaciones] = useState<Record<string, string>>({});
   const [expCargando, setExpCargando] = useState<string | null>(null);
@@ -72,10 +73,15 @@ export function Cuestionario({
       scrollTop();
     } else {
       setEnviando(true);
-      const res = companyId
-        ? await guardarEvaluacion(companyId, respuestas)
-        : await evaluarDiagnostico(respuestas);
-      setResultado(res);
+      if (companyId) {
+        const guardada = await guardarEvaluacion(companyId, respuestas);
+        setResultado(guardada.resultado);
+        setEvaluationId(guardada.id);
+      } else {
+        const res = await evaluarDiagnostico(respuestas);
+        setResultado(res);
+        setEvaluationId(null);
+      }
       setEnviando(false);
       scrollTop();
     }
@@ -92,6 +98,7 @@ export function Cuestionario({
 
   function reiniciar() {
     setResultado(null);
+    setEvaluationId(null);
     setRespuestas({});
     setBlockIndex(0);
     scrollTop();
@@ -110,7 +117,7 @@ export function Cuestionario({
             >
               ← Inicio
             </Link>
-            <DescargarPDF respuestas={respuestas} empresa={companyName} />
+            {evaluationId && <DescargarPDF evaluationId={evaluationId} />}
             <button
               onClick={reiniciar}
               className="rounded-lg px-4 py-[7px] text-[13px] text-muted transition hover:text-white"

@@ -23,8 +23,11 @@ export interface EstadoMiembro {
 const MENSAJE_RPC: Record<string, string> = {
   agregado: "Miembro agregado ✓",
   invitado: "Invitación enviada ✉️ — se unirá automáticamente al ingresar con ese email.",
-  no_admin: "Solo un administrador puede agregar miembros.",
+  ok: "Cambio aplicado ✓",
+  no_admin: "Solo un administrador puede realizar esta acción.",
   rol_invalido: "Rol inválido.",
+  no_encontrado: "El miembro no se encontró.",
+  ultimo_admin: "No se puede dejar la empresa sin administradores.",
 };
 
 /** Agrega un miembro a una empresa por email, con un rol. Solo admins (validado en la base). */
@@ -53,6 +56,62 @@ export async function agregarMiembro(
     return { ok: true, mensaje: MENSAJE_RPC[codigo] };
   }
   return { mensaje: MENSAJE_RPC[codigo] ?? "No se pudo agregar el miembro." };
+}
+
+/** Cambia el rol de un miembro existente. La RPC valida admin y bloquea "último admin". */
+export async function cambiarRolMiembro(
+  companyId: string,
+  userId: string,
+  rol: string,
+): Promise<EstadoMiembro> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("cambiar_rol_miembro", {
+    p_company: companyId,
+    p_user: userId,
+    p_rol: rol,
+  });
+  if (error) return { mensaje: "No se pudo cambiar el rol." };
+  const codigo = String(data);
+  if (codigo === "ok") {
+    revalidatePath("/dashboard");
+    return { ok: true, mensaje: MENSAJE_RPC.ok };
+  }
+  return { mensaje: MENSAJE_RPC[codigo] ?? "No se pudo cambiar el rol." };
+}
+
+/** Remueve a un miembro de una empresa. La RPC valida admin y bloquea "último admin". */
+export async function removerMiembro(
+  companyId: string,
+  userId: string,
+): Promise<EstadoMiembro> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("remover_miembro", {
+    p_company: companyId,
+    p_user: userId,
+  });
+  if (error) return { mensaje: "No se pudo remover el miembro." };
+  const codigo = String(data);
+  if (codigo === "ok") {
+    revalidatePath("/dashboard");
+    return { ok: true, mensaje: "Miembro removido ✓" };
+  }
+  return { mensaje: MENSAJE_RPC[codigo] ?? "No se pudo remover el miembro." };
+}
+
+/** Cancela una invitación pendiente (RLS exige rol admin). */
+export async function cancelarInvitacion(
+  companyId: string,
+  email: string,
+): Promise<EstadoMiembro> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("invitaciones")
+    .delete()
+    .eq("company_id", companyId)
+    .eq("email", email.toLowerCase().trim());
+  if (error) return { mensaje: "No se pudo cancelar la invitación." };
+  revalidatePath("/dashboard");
+  return { ok: true, mensaje: "Invitación cancelada ✓" };
 }
 
 const SECTORES_VALIDOS = ["Tecnología", "Salud", "Financiero", "Educación", "Comercio", "Servicios", "Industrial", "Otro"];
@@ -102,11 +161,16 @@ export async function crearEmpresa(
   redirect("/dashboard");
 }
 
+export interface EvaluacionGuardada {
+  id: string;
+  resultado: ResultadoDiagnostico;
+}
+
 /** Calcula el cumplimiento EN EL SERVIDOR y persiste la evaluación + respuestas. */
 export async function guardarEvaluacion(
   companyId: string,
   respuestas: Respuestas,
-): Promise<ResultadoDiagnostico> {
+): Promise<EvaluacionGuardada> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -155,5 +219,5 @@ export async function guardarEvaluacion(
   }
 
   revalidatePath("/dashboard");
-  return resultado;
+  return { id: evaluacion.id as string, resultado };
 }

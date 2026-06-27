@@ -1,15 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Respuestas } from "@/lib/diagnostico/calcular";
 
-export function DescargarPDF({
-  respuestas,
-  empresa,
-}: {
-  respuestas: Respuestas;
-  empresa?: string | null;
-}) {
+export function DescargarPDF({ evaluationId }: { evaluationId: string }) {
   const [cargando, setCargando] = useState(false);
 
   async function descargar() {
@@ -18,7 +11,7 @@ export function DescargarPDF({
       const res = await fetch("/api/reporte", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ respuestas, empresa }),
+        body: JSON.stringify({ evaluationId }),
       });
       if (!res.ok) throw new Error("fallo");
       const blob = await res.blob();

@@ -68,7 +68,7 @@ export default async function EvaluacionPage({
             >
               ← Panel
             </Link>
-            <DescargarPDF respuestas={respuestas} empresa={empresa?.nombre ?? null} />
+            <DescargarPDF evaluationId={evaluacion.id} />
           </div>
         </div>
       </div>
