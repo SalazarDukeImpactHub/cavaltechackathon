@@ -57,7 +57,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden"
           >
-            Conocé CAVALTEC
+            Conozca CAVALTEC
           </a>
           <Link
             href="/login"
@@ -104,13 +104,13 @@ export default function Home() {
             className="font-display mb-[22px] font-extrabold leading-[1.1] text-white"
             style={{ fontSize: "clamp(30px,5vw,60px)", maxWidth: 860 }}
           >
-            Conocé tu nivel de <span style={{ color: "var(--gold)" }}>cumplimiento</span>
+            Conozca su nivel de <span style={{ color: "var(--gold)" }}>cumplimiento</span>
             <br />en protección de datos personales
           </h1>
 
           <p className="mb-11 leading-[1.65] text-muted" style={{ fontSize: "clamp(15px,2vw,18px)", maxWidth: 560 }}>
-            Respondé 11 preguntas y obtené un diagnóstico preciso con brechas identificadas y
-            recomendaciones accionables para tu empresa.
+            Responda 11 preguntas y obtenga un diagnóstico preciso con brechas identificadas y
+            recomendaciones accionables para su empresa.
           </p>
 
           <Link

@@ -199,7 +199,7 @@ export function ChatPanel({ subtitulo, bienvenida, sugerencias, tooltip, onEnvia
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Escribí tu pregunta…"
+              placeholder="Escriba su pregunta…"
               maxLength={500}
               className="flex-1 rounded-full px-4 py-2.5 text-[13px] text-white outline-none placeholder:text-dim"
               style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)" }}
@@ -227,9 +227,9 @@ export function ChatWidget() {
   return (
     <ChatPanel
       subtitulo="Asistente de cumplimiento"
-      bienvenida="¡Hola! Soy Vale 👋 Te ayudo a entender por qué proteger los datos de tu empresa importa — y cómo. ¿Qué querés saber?"
+      bienvenida="¡Hola! Soy Vale 👋 Le ayudo a entender por qué proteger los datos de su empresa importa — y cómo. ¿Qué desea saber?"
       sugerencias={["¿Por qué es importante?", "¿Qué riesgos evito?", "¿Por qué elegirlos?"]}
-      tooltip="Hablá con Vale 👋"
+      tooltip="Hable con Vale 👋"
       onEnviar={responderChat}
     />
   );

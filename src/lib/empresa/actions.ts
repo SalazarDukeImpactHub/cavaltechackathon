@@ -36,7 +36,7 @@ export async function agregarMiembro(
   const email = String(formData.get("email") ?? "").trim();
   const rol = String(formData.get("rol") ?? "evaluador");
 
-  if (!email.includes("@")) return { mensaje: "Ingresá un email válido." };
+  if (!email.includes("@")) return { mensaje: "Ingrese un email válido." };
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("agregar_miembro_por_email", {
@@ -68,13 +68,13 @@ export async function crearEmpresa(
   const sector = String(formData.get("sector") ?? "").trim();
   const tamano = String(formData.get("tamano") ?? "").trim();
 
-  if (nombre.length < 2) return { error: "Ingresá el nombre de la empresa." };
+  if (nombre.length < 2) return { error: "Ingrese el nombre de la empresa." };
   if (nombre.length > 120) return { error: "El nombre es demasiado largo (máximo 120 caracteres)." };
   if (/[<>]/.test(nombre)) return { error: "El nombre contiene caracteres no permitidos." };
 
   const nit = validarNit(nitInput);
   if (!nit.valido) {
-    return { error: "El NIT no es válido. Revisá los dígitos y el dígito de verificación." };
+    return { error: "El NIT no es válido. Revise los dígitos y el dígito de verificación." };
   }
   if (sector && !SECTORES_VALIDOS.includes(sector)) return { error: "Sector inválido." };
   if (tamano && !TAMANOS_VALIDOS.includes(tamano)) return { error: "Tamaño inválido." };
@@ -83,7 +83,7 @@ export async function crearEmpresa(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Tu sesión expiró. Volvé a ingresar." };
+  if (!user) return { error: "Su sesión expiró. Vuelva a ingresar." };
 
   const { error } = await supabase.from("companies").insert({
     nombre,
@@ -95,7 +95,7 @@ export async function crearEmpresa(
 
   if (error) {
     console.error("crearEmpresa:", error.message); // detalle solo en servidor
-    return { error: "No pudimos crear la empresa. Intentá de nuevo." };
+    return { error: "No pudimos crear la empresa. Intente de nuevo." };
   }
 
   revalidatePath("/dashboard");

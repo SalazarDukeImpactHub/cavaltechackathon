@@ -8,7 +8,7 @@ export const CONOCIMIENTO_CAVALTEC = `
 ## ¿Qué es?
 Una plataforma web que permite a cualquier empresa medir su nivel de cumplimiento de la
 Ley 1581 de 2012 (protección de datos personales en Colombia), en la fase de diseño.
-En ~5 minutos: respondés 11 preguntas y obtenés tu porcentaje de cumplimiento, tus brechas
+En ~5 minutos: responde 11 preguntas y obtiene su porcentaje de cumplimiento, sus brechas
 y un plan de acción.
 
 ## ¿Por qué es importante cumplir la Ley 1581?
@@ -26,7 +26,7 @@ y un plan de acción.
 
 ## Ventajas de la plataforma
 - **Diagnóstico claro**: un porcentaje y un velocímetro fáciles de entender, sin jerga legal.
-- **Brechas priorizadas**: te decimos exactamente qué falta y en qué orden resolverlo.
+- **Brechas priorizadas**: le decimos exactamente qué falta y en qué orden resolverlo.
 - **Plan de acción con IA**: recomendaciones concretas y accionables para esta semana.
 - **Reportes PDF descargables**: con el análisis incluido, listos para compartir.
 - **Historial**: cada empresa guarda y reabre sus diagnósticos para medir su avance.
@@ -35,15 +35,15 @@ y un plan de acción.
 
 ## ¿Por qué elegirnos?
 - Está alineado con la tabla oficial de la Ley 1581 (no es un test genérico).
-- La IA traduce lo legal a lenguaje simple y te guía paso a paso.
+- La IA traduce lo legal a lenguaje simple y lo guía paso a paso.
 - Es rápido, gratuito para diagnosticar, y pensado para PyMEs sin equipo legal propio.
 - La misma plataforma practica lo que predica: pasa su propia auditoría de seguridad.
 
 ## ¿Cómo funciona?
-1. Ingresás con tu cuenta de Google.
-2. Registrás tu empresa (nombre, NIT, sector, tamaño).
-3. Respondés las 11 preguntas (3 bloques: Política de datos, Privacidad desde el diseño, Gobernanza).
-4. Ves tu resultado, tus brechas y tu plan de acción. Descargás el PDF o pedís asesoría.
+1. Ingresa con su cuenta de Google.
+2. Registra su empresa (nombre, NIT, sector, tamaño).
+3. Responde las 11 preguntas (3 bloques: Política de datos, Privacidad desde el diseño, Gobernanza).
+4. Ve su resultado, sus brechas y su plan de acción. Descarga el PDF o pide asesoría.
 
 ## Detalles útiles
 - El diagnóstico es gratuito y toma unos 5 minutos.

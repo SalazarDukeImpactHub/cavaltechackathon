@@ -254,7 +254,7 @@ export function Cuestionario({
               ← Anterior
             </button>
             <div className="text-center text-xs text-dim">
-              {!puedeAvanzar && "Respondé todas las preguntas para continuar"}
+              {!puedeAvanzar && "Responda todas las preguntas para continuar"}
             </div>
             <button
               onClick={avanzar}

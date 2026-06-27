@@ -28,8 +28,8 @@ export function RegistroEmpresa() {
       className="rounded-2xl p-7"
       style={{ background: "rgba(13,21,64,.6)", border: "1px solid rgba(255,255,255,.08)", backdropFilter: "blur(12px)" }}
     >
-      <h2 className="font-display text-xl font-bold">Registrá tu empresa</h2>
-      <p className="mt-1 mb-6 text-sm text-muted">Necesitamos estos datos para asociar tus diagnósticos.</p>
+      <h2 className="font-display text-xl font-bold">Registre su empresa</h2>
+      <p className="mt-1 mb-6 text-sm text-muted">Necesitamos estos datos para asociar sus diagnósticos.</p>
 
       <form action={formAction} className="flex flex-col gap-4">
         <div>
@@ -53,7 +53,7 @@ export function RegistroEmpresa() {
           />
           {nitTocado && (
             <p className="mt-1.5 text-xs" style={{ color: nitValido ? "#22c55e" : "#ef4444" }}>
-              {nitValido ? "✓ NIT válido (dígito de verificación correcto)" : "✗ NIT inválido — revisá los dígitos"}
+              {nitValido ? "✓ NIT válido (dígito de verificación correcto)" : "✗ NIT inválido — revise los dígitos"}
             </p>
           )}
         </div>
@@ -62,7 +62,7 @@ export function RegistroEmpresa() {
           <div className="flex-1">
             <label className="mb-1.5 block text-xs font-medium text-muted">Sector</label>
             <select name="sector" className={inputCls} style={inputStyle} defaultValue="">
-              <option value="" style={{ color: "#000" }}>Seleccioná…</option>
+              <option value="" style={{ color: "#000" }}>Seleccione…</option>
               {SECTORES.map((s) => (
                 <option key={s} value={s} style={{ color: "#000" }}>{s}</option>
               ))}
@@ -71,7 +71,7 @@ export function RegistroEmpresa() {
           <div className="flex-1">
             <label className="mb-1.5 block text-xs font-medium text-muted">Tamaño</label>
             <select name="tamano" className={inputCls} style={inputStyle} defaultValue="">
-              <option value="" style={{ color: "#000" }}>Seleccioná…</option>
+              <option value="" style={{ color: "#000" }}>Seleccione…</option>
               {TAMANOS.map((t) => (
                 <option key={t.v} value={t.v} style={{ color: "#000" }}>{t.l}</option>
               ))}

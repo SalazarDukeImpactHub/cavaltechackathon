@@ -39,7 +39,7 @@ export function GestionMiembros({
             >
               <span className="text-sm text-soft">
                 {m.nombre}
-                {m.user_id === miUserId && <span className="text-dim"> · vos</span>}
+                {m.user_id === miUserId && <span className="text-dim"> · usted</span>}
               </span>
               <span
                 className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"

@@ -32,14 +32,14 @@ export default async function LoginPage({
           </Link>
         </div>
 
-        <h1 className="font-display mb-2 text-2xl font-bold">Ingresá a tu cuenta</h1>
+        <h1 className="font-display mb-2 text-2xl font-bold">Ingrese a su cuenta</h1>
         <p className="mb-7 text-sm text-muted">
-          Accedé para guardar tus diagnósticos y consultar el historial de tu empresa.
+          Acceda para guardar sus diagnósticos y consultar el historial de su empresa.
         </p>
 
         {error && (
           <div className="mb-5 rounded-lg px-4 py-3 text-sm" style={{ background: "rgba(239,68,68,.1)", border: "1px solid rgba(239,68,68,.3)", color: "#ef4444" }}>
-            No pudimos iniciar sesión. Intentá de nuevo.
+            No pudimos iniciar sesión. Intente de nuevo.
           </div>
         )}
 
@@ -60,7 +60,7 @@ export default async function LoginPage({
         </form>
 
         <p className="mt-6 text-xs text-dim">
-          El autodiagnóstico requiere una cuenta para proteger los datos de tu empresa.
+          El autodiagnóstico requiere una cuenta para proteger los datos de su empresa.
         </p>
       </div>
 

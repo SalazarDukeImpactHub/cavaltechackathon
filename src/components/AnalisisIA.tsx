@@ -28,7 +28,7 @@ export function AnalisisIA({ porcentaje, brechas }: { porcentaje: number; brecha
       {texto === null ? (
         <>
           <p className="mb-4 text-sm text-muted">
-            Generá una interpretación personalizada de tu resultado y un plan de acción para esta semana.
+            Genere una interpretación personalizada de su resultado y un plan de acción para esta semana.
           </p>
           <button
             onClick={generar}

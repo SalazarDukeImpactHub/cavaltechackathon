@@ -144,9 +144,9 @@ export function ResultadoView({
       {/* CTA */}
       <div className="mx-auto px-6 pb-20 text-center" style={{ maxWidth: 680 }}>
         <div className="rounded-2xl px-10 py-8" style={{ background: "rgba(14,41,118,.15)", border: "1px solid rgba(14,41,118,.4)" }}>
-          <div className="font-display mb-2 text-xl font-bold">¿Querés un plan de acción detallado?</div>
+          <div className="font-display mb-2 text-xl font-bold">¿Desea un plan de acción detallado?</div>
           <p className="mb-6 text-sm text-muted">
-            Nuestro equipo puede ayudarte a cerrar las brechas y alcanzar el cumplimiento de la Ley 1581.
+            Nuestro equipo puede ayudarle a cerrar las brechas y alcanzar el cumplimiento de la Ley 1581.
           </p>
           <a
             href={urlWa}

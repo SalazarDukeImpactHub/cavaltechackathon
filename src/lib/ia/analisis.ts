@@ -23,13 +23,13 @@ export async function explicarPreguntaIA(codigo: string): Promise<string | null>
       model: "claude-haiku-4-5",
       max_tokens: 400,
       system:
-        "Sos un experto en la Ley 1581 de 2012 de Colombia (protección de datos personales). " +
-        "Explicás conceptos legales en lenguaje claro y simple para responsables de pymes, sin jerga. " +
-        "Respondés en español neutro, en 2 o 3 oraciones cortas, enfocándote en qué significa y por qué importa.",
+        "Eres un experto en la Ley 1581 de 2012 de Colombia (protección de datos personales). " +
+        "Explicas conceptos legales en lenguaje claro y simple para responsables de pymes, sin jerga. " +
+        "Respondes en español de Colombia, tratando al lector de usted, en 2 o 3 oraciones cortas, enfocándote en qué significa y por qué importa.",
       messages: [
         {
           role: "user",
-          content: `Explicá en lenguaje sencillo esta pregunta de un autodiagnóstico de cumplimiento:\n\n"${pregunta.texto}"`,
+          content: `Explica en lenguaje sencillo esta pregunta de un autodiagnóstico de cumplimiento:\n\n"${pregunta.texto}"`,
         },
       ],
     });
@@ -55,17 +55,17 @@ export async function generarAnalisisIA(porcentaje: number, brechas: string[]): 
       model: "claude-sonnet-4-6",
       max_tokens: 800,
       system:
-        "Sos un consultor experto en protección de datos (Ley 1581 de Colombia). " +
-        "Interpretás resultados de un autodiagnóstico y das un plan claro, priorizado y motivador para una pyme. " +
-        "Español neutro, directo y accionable, sin jerga legal innecesaria.",
+        "Eres un consultor experto en protección de datos (Ley 1581 de Colombia). " +
+        "Interpretas resultados de un autodiagnóstico y das un plan claro, priorizado y motivador para una pyme. " +
+        "Español de Colombia, tratando al lector de usted, directo y accionable, sin jerga legal innecesaria.",
       messages: [
         {
           role: "user",
           content:
             `Una empresa obtuvo ${porcentaje}% de cumplimiento en la fase de diseño de la Ley 1581.\n\n` +
             `Brechas detectadas (ordenadas por prioridad):\n${detalleBrechas}\n\n` +
-            "Escribí: (1) una interpretación breve del resultado en 2-3 oraciones, y " +
-            "(2) los 3 primeros pasos concretos para esta semana. Usá viñetas para los pasos.",
+            "Escribe: (1) una interpretación breve del resultado en 2-3 oraciones, y " +
+            "(2) los 3 primeros pasos concretos para esta semana. Usa viñetas para los pasos.",
         },
       ],
     });

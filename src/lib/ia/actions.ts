@@ -12,8 +12,8 @@ import {
 } from "./chat";
 
 const SIN_IA = "La asistencia con IA todavía no está disponible. El diagnóstico funciona igual.";
-const SIN_SESION = "Necesitás iniciar sesión para usar la asistencia con IA.";
-const DEMASIADO = "Demasiadas solicitudes. Esperá un momento e intentá de nuevo.";
+const SIN_SESION = "Necesita iniciar sesión para usar la asistencia con IA.";
+const DEMASIADO = "Demasiadas solicitudes. Espere un momento e intente de nuevo.";
 
 async function usuarioId(): Promise<string | null> {
   const supabase = await createClient();
@@ -42,11 +42,11 @@ export async function responderChat(historial: MensajeChat[]): Promise<string> {
   const h = await headers();
   const ip = (h.get("x-forwarded-for")?.split(",")[0] ?? h.get("x-real-ip") ?? "local").trim();
   if (!permitido(`chat:${ip}`, 20, 10 * 60_000)) {
-    return "Vas muy rápido 😅 Esperá un momentito y seguimos.";
+    return "Va muy rápido 😅 Espere un momentito y seguimos.";
   }
   return (
     (await responderChatIA(historial)) ??
-    "Por ahora no puedo responder. Podés empezar tu diagnóstico gratuito con el botón “Iniciar diagnóstico”."
+    "Por ahora no puedo responder. Puede empezar su diagnóstico gratuito con el botón “Iniciar diagnóstico”."
   );
 }
 
