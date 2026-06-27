@@ -4,7 +4,12 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { permitido } from "@/lib/seguridad/rate-limit";
 import { explicarPreguntaIA, generarAnalisisIA } from "./analisis";
-import { responderChatIA, type MensajeChat } from "./chat";
+import {
+  responderChatIA,
+  responderDiagnosticoIA,
+  type MensajeChat,
+  type ContextoDiagnostico,
+} from "./chat";
 
 const SIN_IA = "La asistencia con IA todavía no está disponible. El diagnóstico funciona igual.";
 const SIN_SESION = "Necesitás iniciar sesión para usar la asistencia con IA.";
@@ -43,4 +48,15 @@ export async function responderChat(historial: MensajeChat[]): Promise<string> {
     (await responderChatIA(historial)) ??
     "Por ahora no puedo responder. Podés empezar tu diagnóstico gratuito con el botón “Iniciar diagnóstico”."
   );
+}
+
+/** Asistente in-app sobre el diagnóstico. Autenticado + rate limit por usuario. */
+export async function responderDiagnostico(
+  historial: MensajeChat[],
+  ctx: ContextoDiagnostico,
+): Promise<string> {
+  const uid = await usuarioId();
+  if (!uid) return SIN_SESION;
+  if (!permitido(`diag:${uid}`, 25, 10 * 60_000)) return DEMASIADO;
+  return (await responderDiagnosticoIA(historial, ctx)) ?? SIN_IA;
 }

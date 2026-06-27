@@ -4,11 +4,6 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { responderChat } from "@/lib/ia/actions";
 import { type MensajeChat } from "@/lib/ia/chat";
 
-const BIENVENIDA =
-  "¡Hola! Soy Vale 👋 Te ayudo a entender por qué proteger los datos de tu empresa importa — y cómo. ¿Qué querés saber?";
-
-const SUGERENCIAS = ["¿Por qué es importante?", "¿Qué riesgos evito?", "¿Por qué elegirlos?"];
-
 function Robot({ size, color, animado = false }: { size: number; color: string; animado?: boolean }) {
   const ojo: CSSProperties | undefined = animado
     ? { transformBox: "fill-box", transformOrigin: "center", animation: "parpadeo 4.2s ease-in-out infinite" }
@@ -48,7 +43,16 @@ function Avatar({ size = 32, animado = false }: { size?: number; animado?: boole
   );
 }
 
-export function ChatWidget() {
+interface ChatPanelProps {
+  subtitulo: string;
+  bienvenida: string;
+  sugerencias: string[];
+  tooltip: string;
+  onEnviar: (historial: MensajeChat[]) => Promise<string>;
+}
+
+/** Widget de chat reusable (botón flotante + panel). Vale es el personaje en ambos usos. */
+export function ChatPanel({ subtitulo, bienvenida, sugerencias, tooltip, onEnviar }: ChatPanelProps) {
   const [abierto, setAbierto] = useState(false);
   const [mensajes, setMensajes] = useState<MensajeChat[]>([]);
   const [input, setInput] = useState("");
@@ -66,7 +70,7 @@ export function ChatWidget() {
     setMensajes(nuevos);
     setInput("");
     setCargando(true);
-    const respuesta = await responderChat(nuevos);
+    const respuesta = await onEnviar(nuevos);
     setMensajes([...nuevos, { rol: "assistant", texto: respuesta }]);
     setCargando(false);
   }
@@ -80,35 +84,25 @@ export function ChatWidget() {
           aria-label="Hablar con Vale, la asistente"
           className="group fixed bottom-6 right-6 z-50 h-14 w-14"
         >
-          {/* ondas radar */}
           <span className="absolute inset-0 rounded-full" style={{ border: "2px solid var(--primary-light)", animation: "sonar 2.6s ease-out infinite" }} />
           <span className="absolute inset-0 rounded-full" style={{ border: "2px solid var(--gold)", animation: "sonar 2.6s ease-out infinite 1.3s" }} />
-
-          {/* núcleo robot */}
           <span
             className="absolute inset-0 flex items-center justify-center rounded-full transition group-hover:scale-105"
-            style={{
-              background: "linear-gradient(135deg, var(--primary-light), var(--primary))",
-              boxShadow: "0 8px 24px rgba(14,41,118,.55), 0 0 0 4px rgba(201,162,39,.2)",
-            }}
+            style={{ background: "linear-gradient(135deg, var(--primary-light), var(--primary))", boxShadow: "0 8px 24px rgba(14,41,118,.55), 0 0 0 4px rgba(201,162,39,.2)" }}
           >
             <Robot size={30} color="#fff" animado />
           </span>
-
-          {/* punto en línea */}
           <span className="absolute right-0 top-0 h-3.5 w-3.5 rounded-full border-2" style={{ background: "var(--nivel-alto)", borderColor: "var(--background)" }} />
-
-          {/* tooltip */}
           <span
             className="pointer-events-none absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium text-white opacity-0 transition group-hover:opacity-100"
             style={{ background: "rgba(13,21,64,.95)", border: "1px solid rgba(255,255,255,.1)" }}
           >
-            Hablá con Vale 👋
+            {tooltip}
           </span>
         </button>
       )}
 
-      {/* Panel de chat */}
+      {/* Panel */}
       {abierto && (
         <div
           className="fixed bottom-6 right-6 z-50 flex flex-col overflow-hidden rounded-2xl max-sm:inset-3 max-sm:bottom-3 max-sm:h-auto"
@@ -130,7 +124,7 @@ export function ChatWidget() {
               <div className="font-display text-sm font-bold leading-tight">Vale</div>
               <div className="flex items-center gap-1.5 text-[11px] text-muted">
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--nivel-alto)" }} />
-                Asistente de cumplimiento
+                {subtitulo}
               </div>
             </div>
             <button
@@ -144,20 +138,16 @@ export function ChatWidget() {
 
           {/* Mensajes */}
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-            {/* Bienvenida */}
             <div className="flex gap-2">
               <Avatar size={28} />
-              <div
-                className="max-w-[80%] rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-[13px] leading-[1.5] text-soft"
-                style={{ background: "rgba(255,255,255,.05)" }}
-              >
-                {BIENVENIDA}
+              <div className="max-w-[80%] rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-[13px] leading-[1.5] text-soft" style={{ background: "rgba(255,255,255,.05)" }}>
+                {bienvenida}
               </div>
             </div>
 
             {mensajes.length === 0 && (
               <div className="flex flex-col gap-2 pt-1">
-                {SUGERENCIAS.map((s) => (
+                {sugerencias.map((s) => (
                   <button
                     key={s}
                     onClick={() => enviar(s)}
@@ -228,5 +218,18 @@ export function ChatWidget() {
         </div>
       )}
     </>
+  );
+}
+
+/** Vale en el landing — responde el FAQ informativo (público). */
+export function ChatWidget() {
+  return (
+    <ChatPanel
+      subtitulo="Asistente de cumplimiento"
+      bienvenida="¡Hola! Soy Vale 👋 Te ayudo a entender por qué proteger los datos de tu empresa importa — y cómo. ¿Qué querés saber?"
+      sugerencias={["¿Por qué es importante?", "¿Qué riesgos evito?", "¿Por qué elegirlos?"]}
+      tooltip="Hablá con Vale 👋"
+      onEnviar={responderChat}
+    />
   );
 }

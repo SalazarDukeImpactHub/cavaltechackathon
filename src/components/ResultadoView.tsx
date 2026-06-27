@@ -3,6 +3,7 @@ import { type ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
 import { BLOQUES } from "@/lib/diagnostico/preguntas";
 import { recomendacionesPara, PRIORIDAD_META } from "@/lib/diagnostico/recomendaciones";
 import { AnalisisIA } from "./AnalisisIA";
+import { AsistenteDiagnostico } from "./AsistenteDiagnostico";
 
 interface NivelInfo {
   label: string;
@@ -158,6 +159,8 @@ export function ResultadoView({
           </a>
         </div>
       </div>
+
+      <AsistenteDiagnostico porcentaje={resultado.porcentaje} brechas={resultado.brechas} />
     </div>
   );
 }
