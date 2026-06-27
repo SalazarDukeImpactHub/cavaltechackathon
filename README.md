@@ -16,8 +16,18 @@
 
 ---
 
-> 📸 **Capturas próximamente** — se agregarán en `docs/` (landing, cuestionario y resultado).
-<!-- ![Landing](docs/landing.png) -->
+![Landing de CAVALTEC](docs/landing.png)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/cuestionario.png" alt="Cuestionario por bloques con preguntas Sí / No / N/A" /></td>
+<td width="50%"><img src="docs/resultado.png" alt="Pantalla de resultado con gauge y desglose por dimensión" /></td>
+</tr>
+<tr>
+<td align="center"><sub><b>Cuestionario por bloques</b><br/>11 preguntas ponderadas con lógica padre-hijo</sub></td>
+<td align="center"><sub><b>Resultado y diagnóstico</b><br/>Gauge, desglose por dimensión y brechas</sub></td>
+</tr>
+</table>
 
 ## 📑 Tabla de contenidos
 
