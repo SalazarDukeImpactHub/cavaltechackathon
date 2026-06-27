@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { responderChat } from "@/lib/ia/actions";
 import { type MensajeChat } from "@/lib/ia/chat";
+import { Markdown } from "./Markdown";
 
 function Robot({ size, color, animado = false }: { size: number; color: string; animado?: boolean }) {
   const ojo: CSSProperties | undefined = animado
@@ -170,8 +171,8 @@ export function ChatPanel({ subtitulo, bienvenida, sugerencias, tooltip, onEnvia
               ) : (
                 <div key={i} className="flex gap-2">
                   <Avatar size={28} />
-                  <div className="max-w-[80%] whitespace-pre-wrap rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-[13px] leading-[1.5] text-soft" style={{ background: "rgba(255,255,255,.05)" }}>
-                    {m.texto}
+                  <div className="max-w-[80%] rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-[13px] leading-[1.5]" style={{ background: "rgba(255,255,255,.05)" }}>
+                    <Markdown>{m.texto}</Markdown>
                   </div>
                 </div>
               ),
