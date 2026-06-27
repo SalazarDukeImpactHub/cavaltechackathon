@@ -39,6 +39,7 @@
 - [🚀 Correr localmente](#-correr-localmente)
 - [📁 Estructura del proyecto](#-estructura-del-proyecto)
 - [🔐 Seguridad](#-seguridad)
+- [🧭 Cumplimiento aplicado al propio producto](#-cumplimiento-aplicado-al-propio-producto)
 - [⚠️ Limitaciones y roadmap](#️-limitaciones-y-roadmap)
 - [👥 Equipo](#-equipo)
 - [💡 Sobre Talento Tech](#-sobre-talento-tech)
@@ -204,6 +205,19 @@ Una app que predica protección de datos **pasa su propia auditoría**. Capas im
 - **Defensa en profundidad** — sanitización de entradas, verificación de membresía y rol tanto en código como en la base.
 
 > Resultado de la auditoría OWASP A01–A10: **sin hallazgos críticos.**
+
+---
+
+## 🧭 Cumplimiento aplicado al propio producto
+
+Una solución que evalúa el cumplimiento de la Ley 1581 debe ser, ante todo, **coherente con la ley que evalúa**. CAVALTEC fue diseñado bajo esa regla. Lo que aquí enumeramos no es marketing: es decisión de arquitectura visible en el código.
+
+- **La IA jamás recibe datos personales.** A los modelos de Claude solo viajan códigos de pregunta (`P1`–`P11`), porcentaje de cumplimiento, brechas detectadas, sector y tamaño de la empresa. Cédulas, correos, registros de empleados o de clientes nunca salen de la base. El nombre de la empresa puede aparecer en el contexto, nada más.
+- **El cuestionario está construido con respuestas cerradas.** Sí, No y No Aplica son botones. No hay campos de texto libre donde el usuario pueda introducir accidentalmente información personal de un titular — riesgo real que sí existe en soluciones basadas en chatbots conversacionales abiertos.
+- **El cálculo del cumplimiento es completamente determinista y se hace en el servidor.** La inteligencia artificial enriquece la presentación y narra el plan de acción, pero **no es la fuente de verdad** del diagnóstico. Si el servicio de IA estuviera indisponible, el cuestionario y el resultado seguirían funcionando.
+- **Minimización de datos como práctica.** Solo se persiste lo necesario para reconstruir el diagnóstico (respuestas y porcentaje). No se guarda metadata del dispositivo, ni IP, ni telemetría de comportamiento más allá del rate-limit anti-abuso.
+
+> Este apartado responde a la pregunta natural — *"¿no es contradictorio usar IA en la nube en una app de protección de datos?"* — antes de que llegue. La respuesta corta: lo que la ley protege son **datos personales de personas naturales**, y eso es exactamente lo que nuestra arquitectura nunca expone.
 
 ---
 
