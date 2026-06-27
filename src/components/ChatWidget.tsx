@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { responderChat } from "@/lib/ia/actions";
 import { type MensajeChat } from "@/lib/ia/chat";
 
@@ -9,28 +9,41 @@ const BIENVENIDA =
 
 const SUGERENCIAS = ["¿Por qué es importante?", "¿Qué riesgos evito?", "¿Por qué elegirlos?"];
 
-function Robot({ size, color }: { size: number; color: string }) {
+function Robot({ size, color, animado = false }: { size: number; color: string; animado?: boolean }) {
+  const ojo: CSSProperties | undefined = animado
+    ? { transformBox: "fill-box", transformOrigin: "center", animation: "parpadeo 4.2s ease-in-out infinite" }
+    : undefined;
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={animado ? { animation: "flotar 3.5s ease-in-out infinite" } : undefined}
+    >
       <line x1="12" y1="2.6" x2="12" y2="5.6" />
-      <circle cx="12" cy="2" r="1.1" fill={color} stroke="none" />
+      <circle cx="12" cy="2" r="1.1" fill={color} stroke="none" style={animado ? { animation: "glow 1.8s ease-in-out infinite" } : undefined} />
       <rect x="4.5" y="6" width="15" height="12" rx="4" />
       <line x1="2.6" y1="11" x2="2.6" y2="13.6" />
       <line x1="21.4" y1="11" x2="21.4" y2="13.6" />
-      <circle cx="9.6" cy="11.6" r="1.25" fill={color} stroke="none" />
-      <circle cx="14.4" cy="11.6" r="1.25" fill={color} stroke="none" />
+      <circle cx="9.6" cy="11.6" r="1.25" fill={color} stroke="none" style={ojo} />
+      <circle cx="14.4" cy="11.6" r="1.25" fill={color} stroke="none" style={ojo} />
       <path d="M9.6 14.6 q 2.4 1.8 4.8 0" />
     </svg>
   );
 }
 
-function Avatar({ size = 32 }: { size?: number }) {
+function Avatar({ size = 32, animado = false }: { size?: number; animado?: boolean }) {
   return (
     <div
       className="flex shrink-0 items-center justify-center rounded-full"
       style={{ width: size, height: size, background: "linear-gradient(135deg, var(--gold-bright), var(--gold))" }}
     >
-      <Robot size={Math.round(size * 0.66)} color="#080e26" />
+      <Robot size={Math.round(size * 0.66)} color="#080e26" animado={animado} />
     </div>
   );
 }
@@ -79,7 +92,7 @@ export function ChatWidget() {
               boxShadow: "0 8px 24px rgba(14,41,118,.55), 0 0 0 4px rgba(201,162,39,.2)",
             }}
           >
-            <Robot size={30} color="#fff" />
+            <Robot size={30} color="#fff" animado />
           </span>
 
           {/* punto en línea */}
@@ -112,7 +125,7 @@ export function ChatWidget() {
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,.08)" }}>
-            <Avatar size={36} />
+            <Avatar size={36} animado />
             <div className="flex-1">
               <div className="font-display text-sm font-bold leading-tight">Vale</div>
               <div className="flex items-center gap-1.5 text-[11px] text-muted">
