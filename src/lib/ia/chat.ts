@@ -11,7 +11,16 @@ export interface MensajeChat {
 export interface ContextoDiagnostico {
   porcentaje: number;
   brechas: string[];
+  sector?: string | null;
+  tamano?: string | null;
 }
+
+const TAMANO_LABEL: Record<string, string> = {
+  micro: "microempresa (1-10 personas)",
+  pequena: "pequeña empresa (11-50 personas)",
+  mediana: "mediana empresa (51-200 personas)",
+  grande: "empresa grande (más de 200 personas)",
+};
 
 function aMensajesClaude(historial: MensajeChat[]) {
   const mensajes = (Array.isArray(historial) ? historial : [])
@@ -63,7 +72,8 @@ const SYSTEM_DIAGNOSTICO = `Eres Vale, la asesora de cumplimiento de CAVALTEC. E
 Personalidad: cálida, cercana, clara y directa. Hablas en español de Colombia y tratas al usuario de "usted", sin jerga legal.
 
 Reglas:
-- Responde SOBRE el diagnóstico de esta empresa (su puntaje y sus brechas), usando el contexto de abajo.
+- Responde SOBRE el diagnóstico de esta empresa (su puntaje, sus brechas y su perfil), usando el contexto de abajo.
+- Cuando el contexto incluye sector o tamaño, adapta las respuestas a ese perfil (no des consejos genéricos si tiene info concreta).
 - Respuestas CORTAS: 2 a 4 oraciones. Concreta y accionable.
 - No inventes datos legales específicos ni cifras de multas exactas.
 - Si le preguntan algo no relacionado con su diagnóstico o la Ley 1581, redirija con amabilidad.
@@ -80,9 +90,16 @@ export async function responderDiagnosticoIA(
 
   const porcentaje = Math.max(0, Math.min(100, Math.round(Number(ctx?.porcentaje) || 0)));
   const brechas = Array.isArray(ctx?.brechas) ? ctx.brechas.filter((b) => typeof b === "string") : [];
-  const recs = recomendacionesPara(brechas);
+  const sector = typeof ctx?.sector === "string" && ctx.sector ? ctx.sector : null;
+  const tamano = typeof ctx?.tamano === "string" && ctx.tamano ? ctx.tamano : null;
+  const recs = recomendacionesPara(brechas, { sector, tamano });
+  const partesPerfil: string[] = [];
+  if (sector) partesPerfil.push(`sector ${sector}`);
+  if (tamano && TAMANO_LABEL[tamano]) partesPerfil.push(TAMANO_LABEL[tamano]);
+  const perfil = partesPerfil.length ? `Perfil: ${partesPerfil.join(", ")}.\n` : "";
   const contexto =
     `RESULTADO DE ESTA EMPRESA:\n` +
+    perfil +
     `Cumplimiento (fase de diseño): ${porcentaje}% — nivel ${nivelCumplimiento(porcentaje)}\n` +
     `Brechas detectadas (${recs.length}):\n` +
     (recs.length ? recs.map((r) => `- [${r.prioridad}] ${r.accion}: ${r.detalle}`).join("\n") : "Ninguna.");

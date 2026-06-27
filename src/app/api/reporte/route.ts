@@ -46,10 +46,14 @@ export async function POST(req: Request) {
 
   const { data: companyRow } = await supabase
     .from("companies")
-    .select("nombre")
+    .select("nombre, sector, tamano")
     .eq("id", evaluacion.company_id)
     .maybeSingle();
   const empresa = (companyRow?.nombre as string | undefined) ?? null;
+  const contexto = {
+    sector: (companyRow?.sector as string | undefined) ?? null,
+    tamano: (companyRow?.tamano as string | undefined) ?? null,
+  };
 
   const { data: answerRows } = await supabase
     .from("answers")
@@ -69,13 +73,14 @@ export async function POST(req: Request) {
   });
 
   // Análisis con IA incluido en el PDF (null si no hay API key → se omite la sección).
-  const analisis = await generarAnalisisIA(resultado.porcentaje, resultado.brechas);
+  const analisis = await generarAnalisisIA(resultado.porcentaje, resultado.brechas, contexto);
 
   const elemento = React.createElement(ReporteDoc, {
     resultado,
     empresa,
     fecha,
     analisis,
+    contexto,
   }) as unknown as Parameters<typeof renderToBuffer>[0];
   const buffer = await renderToBuffer(elemento);
 

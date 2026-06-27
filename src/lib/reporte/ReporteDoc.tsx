@@ -1,7 +1,11 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { type ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
 import { BLOQUES } from "@/lib/diagnostico/preguntas";
-import { recomendacionesPara, PRIORIDAD_META } from "@/lib/diagnostico/recomendaciones";
+import {
+  recomendacionesPara,
+  PRIORIDAD_META,
+  type ContextoEmpresa,
+} from "@/lib/diagnostico/recomendaciones";
 
 const COLOR = {
   primary: "#0E2976",
@@ -75,13 +79,15 @@ export function ReporteDoc({
   empresa,
   fecha,
   analisis,
+  contexto,
 }: {
   resultado: ResultadoDiagnostico;
   empresa?: string | null;
   fecha: string;
   analisis?: string | null;
+  contexto?: ContextoEmpresa;
 }) {
-  const recs = recomendacionesPara(resultado.brechas);
+  const recs = recomendacionesPara(resultado.brechas, contexto);
   const c = colorPct(resultado.porcentaje);
 
   return (

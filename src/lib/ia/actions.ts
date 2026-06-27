@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { permitido } from "@/lib/seguridad/rate-limit";
 import { explicarPreguntaIA, generarAnalisisIA } from "./analisis";
+import type { ContextoEmpresa } from "@/lib/diagnostico/recomendaciones";
 import {
   responderChatIA,
   responderDiagnosticoIA,
@@ -30,11 +31,15 @@ export async function explicarPregunta(codigo: string): Promise<string> {
   return (await explicarPreguntaIA(codigo)) ?? SIN_IA;
 }
 
-export async function generarAnalisis(porcentaje: number, brechas: string[]): Promise<string> {
+export async function generarAnalisis(
+  porcentaje: number,
+  brechas: string[],
+  contexto?: ContextoEmpresa,
+): Promise<string> {
   const uid = await usuarioId();
   if (!uid) return SIN_SESION;
   if (!permitido(`ia:analisis:${uid}`, 5, 60_000)) return DEMASIADO;
-  return (await generarAnalisisIA(porcentaje, brechas)) ?? SIN_IA;
+  return (await generarAnalisisIA(porcentaje, brechas, contexto)) ?? SIN_IA;
 }
 
 /** Chat público de Vale (landing). Sin login → rate limit por IP. */

@@ -30,7 +30,7 @@ export default async function EvaluacionPage({
 
   const { data: empresa } = await supabase
     .from("companies")
-    .select("nombre")
+    .select("nombre, sector, tamano")
     .eq("id", evaluacion.company_id)
     .maybeSingle();
 
@@ -80,7 +80,11 @@ export default async function EvaluacionPage({
         </h1>
       </div>
 
-      <ResultadoView resultado={resultado} empresa={empresa?.nombre ?? null} />
+      <ResultadoView
+        resultado={resultado}
+        empresa={empresa?.nombre ?? null}
+        contexto={{ sector: empresa?.sector ?? null, tamano: empresa?.tamano ?? null }}
+      />
     </div>
   );
 }

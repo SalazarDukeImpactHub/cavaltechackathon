@@ -1,7 +1,11 @@
 import { Gauge } from "./Gauge";
 import { type ResultadoDiagnostico } from "@/lib/diagnostico/calcular";
 import { BLOQUES } from "@/lib/diagnostico/preguntas";
-import { recomendacionesPara, PRIORIDAD_META } from "@/lib/diagnostico/recomendaciones";
+import {
+  recomendacionesPara,
+  PRIORIDAD_META,
+  type ContextoEmpresa,
+} from "@/lib/diagnostico/recomendaciones";
 import { AnalisisIA } from "./AnalisisIA";
 import { AsistenteDiagnostico } from "./AsistenteDiagnostico";
 
@@ -29,12 +33,14 @@ const WHATSAPP_TEL = "573136998787";
 export function ResultadoView({
   resultado,
   empresa,
+  contexto,
 }: {
   resultado: ResultadoDiagnostico;
   empresa?: string | null;
+  contexto?: ContextoEmpresa;
 }) {
   const nivel = nivelInfo(resultado.porcentaje);
-  const recomendaciones = recomendacionesPara(resultado.brechas);
+  const recomendaciones = recomendacionesPara(resultado.brechas, contexto);
 
   // Mensaje pre-llenado para la asesoría por WhatsApp, con el contexto del diagnóstico.
   const lineasBrechas = recomendaciones.length
@@ -138,7 +144,7 @@ export function ResultadoView({
 
       {/* Análisis con IA */}
       <div className="mx-auto px-6 pb-9" style={{ maxWidth: 680 }}>
-        <AnalisisIA porcentaje={resultado.porcentaje} brechas={resultado.brechas} />
+        <AnalisisIA porcentaje={resultado.porcentaje} brechas={resultado.brechas} contexto={contexto} />
       </div>
 
       {/* CTA */}
@@ -160,7 +166,7 @@ export function ResultadoView({
         </div>
       </div>
 
-      <AsistenteDiagnostico porcentaje={resultado.porcentaje} brechas={resultado.brechas} />
+      <AsistenteDiagnostico porcentaje={resultado.porcentaje} brechas={resultado.brechas} contexto={contexto} />
     </div>
   );
 }

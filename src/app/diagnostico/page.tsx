@@ -22,7 +22,7 @@ export default async function DiagnosticoPage({
   // 3) RLS sólo devuelve la empresa si el usuario es miembro.
   const { data: company } = await supabase
     .from("companies")
-    .select("id, nombre")
+    .select("id, nombre, sector, tamano")
     .eq("id", empresa)
     .maybeSingle();
   if (!company) redirect("/dashboard");
@@ -36,5 +36,12 @@ export default async function DiagnosticoPage({
     .maybeSingle();
   if (membership?.rol === "auditor") redirect("/dashboard");
 
-  return <Cuestionario companyId={company.id} companyName={company.nombre} />;
+  return (
+    <Cuestionario
+      companyId={company.id}
+      companyName={company.nombre}
+      sector={company.sector}
+      tamano={company.tamano}
+    />
+  );
 }

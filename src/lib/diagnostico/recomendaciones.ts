@@ -18,6 +18,12 @@ export interface Recomendacion {
   detalle: string;
 }
 
+/** Perfil de la empresa que personaliza recomendaciones y análisis IA. */
+export interface ContextoEmpresa {
+  sector?: string | null;
+  tamano?: string | null;
+}
+
 const ORDEN_PRIORIDAD: Record<Prioridad, number> = {
   critico: 0,
   importante: 1,
@@ -101,11 +107,80 @@ export const PRIORIDAD_META: Record<Prioridad, { etiqueta: string; color: string
   recomendado: { etiqueta: "Recomendado", color: "var(--nivel-alto)" },
 };
 
+/**
+ * Notas por sector. Si la empresa pertenece a uno de estos sectores, se anexa
+ * la nota al detalle de la recomendación correspondiente. Si el código no aplica,
+ * la recomendación queda con su detalle base.
+ */
+const NOTAS_SECTOR: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  Salud: {
+    P3: "En salud, distinga finalidades clínicas, administrativas y de investigación: cada una exige autorización separada.",
+    P6: "Para historias clínicas y datos sensibles, la evaluación de impacto es obligatoria antes de lanzar cualquier sistema.",
+    P7: "Minimice los datos clínicos a lo estrictamente necesario para la prestación del servicio.",
+    P9: "El sector salud está bajo doble supervisión (SIC y MinSalud): la gestión de riesgos debe atender ambos marcos.",
+  },
+  Financiero: {
+    P6: "En el sector financiero, la evaluación de impacto debe considerar la Circular 029 de la SFC sobre seguridad de la información.",
+    P9: "Las entidades financieras tienen exigencias adicionales bajo SARO y de seguridad de la información (SFC).",
+    P10: "Para el sector financiero, el oficial de datos debe coordinarse con el área de cumplimiento (SARLAFT/SARO).",
+  },
+  Educación: {
+    P3: "En educación, separe finalidades académicas, administrativas y de bienestar estudiantil.",
+    P4: "Recuerde el régimen reforzado para datos de niños y adolescentes (Decreto 1377, art. 12).",
+    P7: "No solicite información de menores que no sea estrictamente necesaria para la prestación educativa.",
+  },
+  Comercio: {
+    P7: "En comercio, evite pedir datos como cédula completa o dirección para compras simples sin justificación clara.",
+    P8: "Configure casillas de marketing como desmarcadas por defecto: el consentimiento debe ser activo.",
+  },
+  Tecnología: {
+    P3: "En tecnología, sea explícito con finalidades de analítica, perfilamiento y compartir datos con terceros.",
+    P8: "Las plataformas digitales deben ofrecer ajustes de privacidad por defecto, especialmente para cookies de terceros.",
+  },
+};
+
+/**
+ * Notas por tamaño. La carga regulatoria se ajusta a la capacidad operativa
+ * de la empresa: una microempresa no tiene un equipo dedicado, una grande sí.
+ */
+const NOTAS_TAMANO: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  micro: {
+    P1: "Para una microempresa, una política breve (2-3 páginas) es suficiente: enfoque en claridad sobre extensión.",
+    P10: "En microempresas, el rol de oficial puede ser asumido por el representante legal o un colaborador asignado.",
+  },
+  pequena: {
+    P10: "En empresas pequeñas, asigne el rol de oficial a alguien del área administrativa o jurídica con dedicación parcial.",
+  },
+  mediana: {
+    P9: "Para una empresa mediana, formalice el sistema de riesgos con matriz documentada y revisión semestral.",
+    P10: "En medianas, el oficial debería tener dedicación parcial dedicada y reportar a la gerencia.",
+  },
+  grande: {
+    P9: "Como empresa grande, el sistema de riesgos debe estar integrado con el ERM corporativo y auditarse anualmente.",
+    P10: "En empresas grandes, el oficial debe ser un cargo dedicado, con equipo de apoyo y reporte directo a la alta dirección.",
+    P11: "Para empresas grandes, formalice la designación por acto administrativo y comuníquela a todo el personal.",
+  },
+};
+
 /** Recomendaciones para las brechas dadas, ordenadas por prioridad y luego por impacto. */
-export function recomendacionesPara(brechas: string[]): Recomendacion[] {
+export function recomendacionesPara(
+  brechas: string[],
+  contexto?: ContextoEmpresa,
+): Recomendacion[] {
+  const notaSector = contexto?.sector ? NOTAS_SECTOR[contexto.sector] : undefined;
+  const notaTamano = contexto?.tamano ? NOTAS_TAMANO[contexto.tamano] : undefined;
+
   return brechas
     .filter((codigo) => BASE[codigo])
-    .map((codigo) => ({ codigo, ...BASE[codigo] }))
+    .map((codigo) => {
+      const base = BASE[codigo];
+      const extra = [notaSector?.[codigo], notaTamano?.[codigo]].filter(Boolean).join(" ");
+      return {
+        codigo,
+        ...base,
+        detalle: extra ? `${base.detalle} ${extra}` : base.detalle,
+      };
+    })
     .sort((a, b) => {
       const dp = ORDEN_PRIORIDAD[a.prioridad] - ORDEN_PRIORIDAD[b.prioridad];
       if (dp !== 0) return dp;

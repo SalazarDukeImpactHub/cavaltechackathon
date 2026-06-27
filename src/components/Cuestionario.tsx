@@ -24,10 +24,15 @@ const numero = (i: number) => String(i + 1).padStart(2, "0");
 export function Cuestionario({
   companyId = null,
   companyName = null,
+  sector = null,
+  tamano = null,
 }: {
   companyId?: string | null;
   companyName?: string | null;
+  sector?: string | null;
+  tamano?: string | null;
 }) {
+  const contexto = { sector, tamano };
   const router = useRouter();
   const [blockIndex, setBlockIndex] = useState(0);
   const [respuestas, setRespuestas] = useState<Respuestas>({});
@@ -127,7 +132,7 @@ export function Cuestionario({
             </button>
           </div>
         </Nav>
-        <ResultadoView resultado={resultado} empresa={companyName} />
+        <ResultadoView resultado={resultado} empresa={companyName} contexto={contexto} />
       </div>
     );
   }

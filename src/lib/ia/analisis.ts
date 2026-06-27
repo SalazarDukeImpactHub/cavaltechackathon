@@ -1,6 +1,21 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { PREGUNTA_POR_CODIGO } from "@/lib/diagnostico/preguntas";
-import { recomendacionesPara } from "@/lib/diagnostico/recomendaciones";
+import { recomendacionesPara, type ContextoEmpresa } from "@/lib/diagnostico/recomendaciones";
+
+const TAMANO_LABEL: Record<string, string> = {
+  micro: "microempresa (1-10 personas)",
+  pequena: "pequeña empresa (11-50 personas)",
+  mediana: "mediana empresa (51-200 personas)",
+  grande: "empresa grande (más de 200 personas)",
+};
+
+function describirPerfil(contexto?: ContextoEmpresa): string {
+  if (!contexto) return "";
+  const partes: string[] = [];
+  if (contexto.sector) partes.push(`sector ${contexto.sector}`);
+  if (contexto.tamano && TAMANO_LABEL[contexto.tamano]) partes.push(TAMANO_LABEL[contexto.tamano]);
+  return partes.length ? `Perfil de la empresa: ${partes.join(", ")}.` : "";
+}
 
 /**
  * Lógica de IA en módulo neutral (sin "use server") — usable desde server actions
@@ -40,14 +55,19 @@ export async function explicarPreguntaIA(codigo: string): Promise<string | null>
 }
 
 /** Interpreta el resultado y arma un plan accionable. Sonnet — más razonamiento. */
-export async function generarAnalisisIA(porcentaje: number, brechas: string[]): Promise<string | null> {
+export async function generarAnalisisIA(
+  porcentaje: number,
+  brechas: string[],
+  contexto?: ContextoEmpresa,
+): Promise<string | null> {
   if (!process.env.ANTHROPIC_API_KEY) return null;
 
-  const recs = recomendacionesPara(brechas);
+  const recs = recomendacionesPara(brechas, contexto);
   const detalleBrechas =
     recs.length === 0
       ? "No se detectaron brechas."
       : recs.map((r) => `- [${r.prioridad}] ${r.accion}: ${r.detalle}`).join("\n");
+  const perfil = describirPerfil(contexto);
 
   try {
     const client = new Anthropic();
@@ -57,15 +77,19 @@ export async function generarAnalisisIA(porcentaje: number, brechas: string[]): 
       system:
         "Eres un consultor experto en protección de datos (Ley 1581 de Colombia). " +
         "Interpretas resultados de un autodiagnóstico y das un plan claro, priorizado y motivador para una pyme. " +
+        "Cuando recibes el perfil de la empresa (sector y tamaño), personalizas las recomendaciones " +
+        "para ese contexto puntual: una microempresa de comercio no necesita lo mismo que una grande de salud. " +
         "Español de Colombia, tratando al lector de usted, directo y accionable, sin jerga legal innecesaria.",
       messages: [
         {
           role: "user",
           content:
-            `Una empresa obtuvo ${porcentaje}% de cumplimiento en la fase de diseño de la Ley 1581.\n\n` +
+            (perfil ? `${perfil}\n\n` : "") +
+            `La empresa obtuvo ${porcentaje}% de cumplimiento en la fase de diseño de la Ley 1581.\n\n` +
             `Brechas detectadas (ordenadas por prioridad):\n${detalleBrechas}\n\n` +
-            "Escribe: (1) una interpretación breve del resultado en 2-3 oraciones, y " +
-            "(2) los 3 primeros pasos concretos para esta semana. Usa viñetas para los pasos.",
+            "Escribe: (1) una interpretación breve del resultado en 2-3 oraciones, " +
+            (perfil ? "mencionando cómo el perfil de la empresa influye, y " : "y ") +
+            "(2) los 3 primeros pasos concretos para esta semana, adaptados al perfil. Usa viñetas para los pasos.",
         },
       ],
     });

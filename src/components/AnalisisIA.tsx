@@ -2,15 +2,24 @@
 
 import { useState } from "react";
 import { generarAnalisis } from "@/lib/ia/actions";
+import type { ContextoEmpresa } from "@/lib/diagnostico/recomendaciones";
 import { Markdown } from "./Markdown";
 
-export function AnalisisIA({ porcentaje, brechas }: { porcentaje: number; brechas: string[] }) {
+export function AnalisisIA({
+  porcentaje,
+  brechas,
+  contexto,
+}: {
+  porcentaje: number;
+  brechas: string[];
+  contexto?: ContextoEmpresa;
+}) {
   const [texto, setTexto] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
 
   async function generar() {
     setCargando(true);
-    const res = await generarAnalisis(porcentaje, brechas);
+    const res = await generarAnalisis(porcentaje, brechas, contexto);
     setTexto(res);
     setCargando(false);
   }
