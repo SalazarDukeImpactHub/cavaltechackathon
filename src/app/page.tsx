@@ -69,7 +69,11 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden " style={{ backgroundImage: "url(servicios_fondo.png)",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+             }}>
         <div className="dot-grid pointer-events-none absolute inset-0" />
         <div
           className="pointer-events-none absolute left-1/2 top-[40%]"
