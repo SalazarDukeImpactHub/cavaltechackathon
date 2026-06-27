@@ -68,7 +68,7 @@ export default async function DashboardPage() {
               className="rounded-lg px-4 py-[7px] text-[13px] text-muted transition hover:text-white"
               style={{ border: "1px solid rgba(255,255,255,.12)" }}
             >
-              Inicio
+              ← Inicio
             </Link>
             <form action="/auth/signout" method="post">
               <button

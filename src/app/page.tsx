@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
 import { ChatWidget } from "@/components/ChatWidget";
+import { createClient } from "@/lib/supabase/server";
 
 const FEATURES = [
   {
@@ -40,32 +41,65 @@ const FEATURES = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const nombre = (user?.user_metadata?.full_name as string) ?? user?.email ?? null;
+
+  const enlaces = (
+    <>
+      <Link href="#" className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden">Inicio</Link>
+      <a
+        href="https://www.cavaltec.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden"
+      >
+        Conozca CAVALTEC
+      </a>
+    </>
+  );
+
   return (
     <>
       {/* NAV (fija) */}
       <nav
-        className="sticky top-0 z-50 flex h-[72px] items-center justify-between px-6 sm:px-12"
+        className="sticky top-0 z-50 flex h-[72px] items-center px-6 sm:px-12"
         style={{ background: "rgba(8,14,38,.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,.06)" }}
       >
-        <Logo />
-        <div className="flex items-center gap-7">
-          <Link href="#" className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden">Inicio</Link>
-          <a
-            href="https://www.cavaltec.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[13.5px] text-muted transition hover:text-white max-sm:hidden"
-          >
-            Conozca CAVALTEC
-          </a>
-          <Link
-            href="/login"
-            className="rounded-lg bg-primary px-[18px] py-2 text-[13px] font-medium text-white transition hover:bg-primary-hover"
-          >
-            Ingresar
-          </Link>
-        </div>
+        {user ? (
+          <>
+            <div className="flex-1"><Logo /></div>
+            <div className="flex flex-1 items-center justify-center gap-7">{enlaces}</div>
+            <div className="flex flex-1 items-center justify-end gap-3">
+              <span className="text-[13px] text-muted max-sm:hidden">{nombre}</span>
+              <form action="/auth/signout" method="post">
+                <button
+                  type="submit"
+                  className="rounded-lg px-4 py-[7px] text-[13px] text-muted transition hover:text-white"
+                  style={{ border: "1px solid rgba(255,255,255,.12)" }}
+                >
+                  Cerrar sesión
+                </button>
+              </form>
+            </div>
+          </>
+        ) : (
+          <div className="flex w-full items-center justify-between">
+            <Logo />
+            <div className="flex items-center gap-7">
+              {enlaces}
+              <Link
+                href="/login"
+                className="rounded-lg bg-primary px-[18px] py-2 text-[13px] font-medium text-white transition hover:bg-primary-hover"
+              >
+                Ingresar
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* HERO */}

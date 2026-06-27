@@ -65,7 +65,7 @@ export default async function LoginPage({
       </div>
 
       <Link href="/" className="relative mt-6 text-[13px] text-muted transition hover:text-white">
-        ← Volver al inicio
+        ← Inicio
       </Link>
     </div>
   );
