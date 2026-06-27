@@ -103,7 +103,7 @@ export default async function Home() {
       </nav>
 
       {/* HERO */}
-      <div className="relative overflow-hidden " style={{ backgroundImage: "url(servicios_fondo.png)",
+      <div className="relative overflow-hidden " style={{ backgroundImage: "url(/servicios_fondo.png)",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
