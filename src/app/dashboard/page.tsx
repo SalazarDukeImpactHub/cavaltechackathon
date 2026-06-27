@@ -56,9 +56,18 @@ export default async function DashboardPage() {
     <div className="min-h-screen">
       <div style={{ background: "rgba(8,14,38,.97)", borderBottom: "1px solid rgba(255,255,255,.07)" }}>
         <div className="mx-auto flex h-16 items-center justify-between px-6 sm:px-12">
-          <Logo size="sm" />
+          <Link href="/" aria-label="Ir al inicio">
+            <Logo size="sm" />
+          </Link>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-muted max-sm:hidden">{nombre}</span>
+            <Link
+              href="/"
+              className="rounded-lg px-4 py-[7px] text-[13px] text-muted transition hover:text-white"
+              style={{ border: "1px solid rgba(255,255,255,.12)" }}
+            >
+              Inicio
+            </Link>
             <form action="/auth/signout" method="post">
               <button
                 type="submit"
