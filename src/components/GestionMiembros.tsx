@@ -10,11 +10,13 @@ const inputStyle = { background: "rgba(255,255,255,.04)", border: "1px solid rgb
 export function GestionMiembros({
   companyId,
   miembros,
+  invitaciones,
   esAdmin,
   miUserId,
 }: {
   companyId: string;
   miembros: Miembro[];
+  invitaciones: { email: string; rol: string }[];
   esAdmin: boolean;
   miUserId: string;
 }) {
@@ -49,6 +51,36 @@ export function GestionMiembros({
           );
         })}
       </ul>
+
+      {invitaciones.length > 0 && (
+        <div className="mt-4">
+          <div className="mb-2 text-[11px] font-bold uppercase tracking-[1.5px] text-dim">
+            Invitaciones pendientes ({invitaciones.length})
+          </div>
+          <ul className="flex flex-col gap-2">
+            {invitaciones.map((iv) => {
+              const meta = ROL_META[iv.rol] ?? ROL_META.evaluador;
+              return (
+                <li
+                  key={iv.email}
+                  className="flex items-center justify-between rounded-lg px-4 py-2.5"
+                  style={{ background: "rgba(255,255,255,.02)", border: "1px dashed rgba(255,255,255,.12)" }}
+                >
+                  <span className="text-sm text-muted">
+                    {iv.email} <span className="text-dim">· pendiente</span>
+                  </span>
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                    style={{ color: meta.color, background: `color-mix(in srgb, ${meta.color} 14%, transparent)`, border: `1px solid color-mix(in srgb, ${meta.color} 35%, transparent)` }}
+                  >
+                    {meta.label}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       {esAdmin && (
         <form action={formAction} className="mt-4 flex flex-wrap items-center gap-2">

@@ -39,17 +39,19 @@ export default async function DashboardPage() {
 
   const nombre = (user.user_metadata?.full_name as string) ?? user.email;
 
-  const [{ data: empresas }, { data: evaluaciones }, { data: members }, { data: perfiles }] =
+  const [{ data: empresas }, { data: evaluaciones }, { data: members }, { data: perfiles }, { data: invites }] =
     await Promise.all([
       supabase.from("companies").select("id, nombre, nit, sector"),
       supabase.from("evaluations").select("id, company_id, porcentaje, created_at").order("created_at", { ascending: false }),
       supabase.from("company_members").select("company_id, user_id, rol"),
       supabase.from("profiles").select("id, nombre"),
+      supabase.from("invitaciones").select("company_id, email, rol"),
     ]);
 
   const lista = (empresas ?? []) as Empresa[];
   const evals = (evaluaciones ?? []) as Evaluacion[];
   const memberRows = (members ?? []) as MemberRow[];
+  const invitaciones = (invites ?? []) as { company_id: string; email: string; rol: string }[];
   const nombrePorId = new Map((perfiles ?? []).map((p) => [p.id as string, (p.nombre as string) ?? "Usuario"]));
 
   return (
@@ -94,6 +96,9 @@ export default async function DashboardPage() {
               const miembros: Miembro[] = memberRows
                 .filter((m) => m.company_id === emp.id)
                 .map((m) => ({ user_id: m.user_id, rol: m.rol, nombre: nombrePorId.get(m.user_id) ?? "Usuario" }));
+              const invitacionesEmp = invitaciones
+                .filter((iv) => iv.company_id === emp.id)
+                .map((iv) => ({ email: iv.email, rol: iv.rol }));
               const miRol = miembros.find((m) => m.user_id === user.id)?.rol ?? "evaluador";
               const rolMeta = ROL_META[miRol] ?? ROL_META.evaluador;
               const puedeEvaluar = miRol === "admin" || miRol === "evaluador";
@@ -161,7 +166,7 @@ export default async function DashboardPage() {
                   </div>
 
                   {/* Equipo y roles */}
-                  <GestionMiembros companyId={emp.id} miembros={miembros} esAdmin={miRol === "admin"} miUserId={user.id} />
+                  <GestionMiembros companyId={emp.id} miembros={miembros} invitaciones={invitacionesEmp} esAdmin={miRol === "admin"} miUserId={user.id} />
                 </div>
               );
             })}

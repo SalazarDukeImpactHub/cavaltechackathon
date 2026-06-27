@@ -21,10 +21,10 @@ export interface EstadoMiembro {
 }
 
 const MENSAJE_RPC: Record<string, string> = {
-  ok: "Miembro agregado ✓",
+  agregado: "Miembro agregado ✓",
+  invitado: "Invitación enviada ✉️ — se unirá automáticamente al ingresar con ese email.",
   no_admin: "Solo un administrador puede agregar miembros.",
   rol_invalido: "Rol inválido.",
-  usuario_no_encontrado: "No existe un usuario con ese email (debe haber ingresado al menos una vez).",
 };
 
 /** Agrega un miembro a una empresa por email, con un rol. Solo admins (validado en la base). */
@@ -48,9 +48,9 @@ export async function agregarMiembro(
   if (error) return { mensaje: "No se pudo agregar el miembro." };
 
   const codigo = String(data);
-  if (codigo === "ok") {
+  if (codigo === "agregado" || codigo === "invitado") {
     revalidatePath("/dashboard");
-    return { ok: true, mensaje: MENSAJE_RPC.ok };
+    return { ok: true, mensaje: MENSAJE_RPC[codigo] };
   }
   return { mensaje: MENSAJE_RPC[codigo] ?? "No se pudo agregar el miembro." };
 }
