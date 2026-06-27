@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { signInWithGoogle } from "./actions";
 
@@ -26,7 +27,9 @@ export default async function LoginPage({
         style={{ background: "rgba(13,21,64,.6)", border: "1px solid rgba(255,255,255,.08)", backdropFilter: "blur(12px)" }}
       >
         <div className="mb-6 flex justify-center">
-          <Logo />
+          <Link href="/" aria-label="Ir al inicio">
+            <Logo />
+          </Link>
         </div>
 
         <h1 className="font-display mb-2 text-2xl font-bold">Ingresá a tu cuenta</h1>
@@ -60,6 +63,10 @@ export default async function LoginPage({
           El autodiagnóstico requiere una cuenta para proteger los datos de tu empresa.
         </p>
       </div>
+
+      <Link href="/" className="relative mt-6 text-[13px] text-muted transition hover:text-white">
+        ← Volver al inicio
+      </Link>
     </div>
   );
 }
