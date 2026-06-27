@@ -9,19 +9,28 @@ const BIENVENIDA =
 
 const SUGERENCIAS = ["¿Por qué es importante?", "¿Qué riesgos evito?", "¿Por qué elegirlos?"];
 
+function Robot({ size, color }: { size: number; color: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="2.6" x2="12" y2="5.6" />
+      <circle cx="12" cy="2" r="1.1" fill={color} stroke="none" />
+      <rect x="4.5" y="6" width="15" height="12" rx="4" />
+      <line x1="2.6" y1="11" x2="2.6" y2="13.6" />
+      <line x1="21.4" y1="11" x2="21.4" y2="13.6" />
+      <circle cx="9.6" cy="11.6" r="1.25" fill={color} stroke="none" />
+      <circle cx="14.4" cy="11.6" r="1.25" fill={color} stroke="none" />
+      <path d="M9.6 14.6 q 2.4 1.8 4.8 0" />
+    </svg>
+  );
+}
+
 function Avatar({ size = 32 }: { size?: number }) {
   return (
     <div
-      className="flex shrink-0 items-center justify-center rounded-full font-display font-bold"
-      style={{
-        width: size,
-        height: size,
-        fontSize: size * 0.45,
-        color: "#080e26",
-        background: "linear-gradient(135deg, var(--gold-bright), var(--gold))",
-      }}
+      className="flex shrink-0 items-center justify-center rounded-full"
+      style={{ width: size, height: size, background: "linear-gradient(135deg, var(--gold-bright), var(--gold))" }}
     >
-      V
+      <Robot size={Math.round(size * 0.66)} color="#080e26" />
     </div>
   );
 }
@@ -56,25 +65,29 @@ export function ChatWidget() {
         <button
           onClick={() => setAbierto(true)}
           aria-label="Hablar con Vale, la asistente"
-          className="group fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full text-white transition hover:scale-105"
-          style={{
-            background: "linear-gradient(135deg, var(--primary-light), var(--primary))",
-            boxShadow: "0 8px 24px rgba(14,41,118,.5), 0 0 0 4px rgba(201,162,39,.18)",
-          }}
+          className="group fixed bottom-6 right-6 z-50 h-14 w-14"
         >
+          {/* ondas radar */}
+          <span className="absolute inset-0 rounded-full" style={{ border: "2px solid var(--primary-light)", animation: "sonar 2.6s ease-out infinite" }} />
+          <span className="absolute inset-0 rounded-full" style={{ border: "2px solid var(--gold)", animation: "sonar 2.6s ease-out infinite 1.3s" }} />
+
+          {/* núcleo robot */}
           <span
-            className="absolute inset-0 rounded-full"
-            style={{ boxShadow: "0 0 0 0 rgba(201,162,39,.35)", animation: "glow 3s ease-in-out infinite" }}
-          />
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-          </svg>
+            className="absolute inset-0 flex items-center justify-center rounded-full transition group-hover:scale-105"
+            style={{
+              background: "linear-gradient(135deg, var(--primary-light), var(--primary))",
+              boxShadow: "0 8px 24px rgba(14,41,118,.55), 0 0 0 4px rgba(201,162,39,.2)",
+            }}
+          >
+            <Robot size={30} color="#fff" />
+          </span>
+
+          {/* punto en línea */}
+          <span className="absolute right-0 top-0 h-3.5 w-3.5 rounded-full border-2" style={{ background: "var(--nivel-alto)", borderColor: "var(--background)" }} />
+
+          {/* tooltip */}
           <span
-            className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full border-2"
-            style={{ background: "var(--nivel-alto)", borderColor: "var(--background)" }}
-          />
-          <span
-            className="pointer-events-none absolute right-16 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium text-white opacity-0 transition group-hover:opacity-100"
+            className="pointer-events-none absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium text-white opacity-0 transition group-hover:opacity-100"
             style={{ background: "rgba(13,21,64,.95)", border: "1px solid rgba(255,255,255,.1)" }}
           >
             Hablá con Vale 👋
